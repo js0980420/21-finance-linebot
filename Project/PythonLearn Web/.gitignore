@@ -1,0 +1,147 @@
+# 📋 Python協作教學平台 - Render部署專用 .gitignore
+# 只允許10個核心檔案，其他全部忽略
+
+# Node.js 相關
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn-integrity
+
+# 本地開發檔案（保留在本地，不上傳）
+*.php
+php/
+mysql/
+websocket_version/
+ai_config.json
+chat_api_handler.php
+code_sync_handler.php
+ai_api_handler.php
+websocket_server.php
+
+# 批次腳本和部署檔案
+*.bat
+*.cmd
+*.sh
+deploy.bat
+setup_github_repository.bat
+cleanup_for_render.bat
+
+# IDE 和編輯器檔案
+.vscode/
+.idea/
+*.swp
+*.swo
+.cursorrules
+
+# 臨時檔案和備份
+*.tmp
+*.temp
+*.bak
+*.backup
+*.old
+*.log
+sync_debug.log
+
+# 壓縮檔案
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# 其他文檔檔案（不需要在Render倉庫中）
+CONFLICT_TESTING_GUIDE.md
+COLLABORATION_TEST_GUIDE.md
+CHANGELOG.md
+CLEANUP_SUMMARY.md
+AI助教*.md
+GITHUB_SETUP_GUIDE.md
+
+# 系統檔案
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 環境變數檔案
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# 測試覆蓋率報告
+coverage/
+*.lcov
+
+# 運行時檔案
+*.pid
+*.seed
+*.pid.lock
+
+# 依賴目錄
+jspm_packages/
+
+# TypeScript 編譯輸出
+*.tsbuildinfo
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# parcel-bundler cache (https://parceljs.org/)
+.cache
+.parcel-cache
+
+# Next.js build output
+.next
+
+# Nuxt.js build / generate output
+.nuxt
+dist
+
+# Gatsby files
+.cache/
+public
+
+# Storybook build outputs
+.out
+.storybook-out
+
+# Temporary folders
+tmp/
+temp/
+
+# 只允許以下10個核心檔案
+!server.js
+!package.json
+!package-lock.json
+!render.yaml
+!README.md
+!DEPLOYMENT_GUIDE.md
+!TEACHER_GUIDE.md
+!GITHUB_RULES.md
+!.gitignore
+
+# 允許public目錄，但只允許特定檔案
+!public/
+public/*
+!public/index.html
+!public/teacher-dashboard.html
