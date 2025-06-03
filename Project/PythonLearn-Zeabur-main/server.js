@@ -635,6 +635,9 @@ async function handleMessage(userId, message) { // 將函數改為異步
         case 'run_code':
             handleRunCode(userId, message);
             break;
+        case 'save_code':
+            await handleSaveCode(userId, message);
+            break;
         case 'load_code':
             await handleLoadCode(userId, message);
             break;
@@ -1890,6 +1893,25 @@ PORT = parseInt(PORT) || 8080;
 
 const HOST = process.env.HOST || '0.0.0.0';
 
+// 抑制 HTTP/2 和 HTTP/3 的 TLS 警告（這些在 Zeabur 中是正常的）
+if (process.env.NODE_ENV === 'production') {
+    // 在生產環境中，Zeabur 會在負載均衡器層面處理 HTTPS
+    // 這些警告是正常的，可以安全忽略
+    process.removeAllListeners('warning');
+    process.on('warning', (warning) => {
+        // 過濾掉 HTTP/2 和 HTTP/3 的 TLS 相關警告
+        if (warning.message && 
+            (warning.message.includes('HTTP/2') || 
+             warning.message.includes('HTTP/3') || 
+             warning.message.includes('TLS'))) {
+            // 靜默處理這些警告
+            return;
+        }
+        // 其他警告仍然顯示
+        console.warn('⚠️ Node.js 警告:', warning.message);
+    });
+}
+
 // 添加啟動前檢查
 console.log(`🔍 啟動前檢查:`);
 console.log(`   - Node.js 版本: ${process.version}`);
@@ -2117,4 +2139,99 @@ async function handleLoadCode(userId, message) {
     } else {
         console.log(`🔄 ${user.name} 載入最新代碼：版本 ${currentVersion} → ${latestVersion}`);
     }
+}
+
+// 處理代碼保存（手動保存）
+async function handleSaveCode(userId, message) {
+    const user = users.get(userId);
+    if (!user || !user.roomId) {
+        user?.ws.send(JSON.stringify({
+            type: 'save_code_error',
+            error: '用戶未在房間中'
+        }));
+        return;
+    }
+
+    const room = rooms.get(user.roomId);
+    if (!room) {
+        user.ws.send(JSON.stringify({
+            type: 'save_code_error',
+            error: '房間不存在'
+        }));
+        return;
+    }
+
+    const { code, saveName } = message;
+    const timestamp = Date.now();
+
+    // 更新房間代碼和版本
+    room.code = code;
+    room.version++;
+    room.lastEditedBy = user.name;
+    room.lastActivity = timestamp;
+
+    if (isDatabaseAvailable && user.dbUserId) {
+        // 數據庫模式：保存到數據庫
+        try {
+            // 保存到代碼歷史表
+            await pool.execute(
+                'INSERT INTO code_history (room_id, user_id, code_content, version, save_name, timestamp) VALUES (?, ?, ?, ?, ?, ?)',
+                [user.roomId, user.dbUserId, code, room.version, saveName || null, new Date(timestamp)]
+            );
+
+            // 更新房間表的當前代碼
+            await pool.execute(
+                'UPDATE rooms SET current_code_content = ?, current_code_version = ?, last_activity = CURRENT_TIMESTAMP WHERE id = ?',
+                [code, room.version, user.roomId]
+            );
+
+            console.log(`💾 用戶 ${user.name} 手動保存代碼到數據庫 - 房間: ${user.roomId}, 版本: ${room.version}, 名稱: ${saveName || '未命名'}`);
+        } catch (error) {
+            console.error(`❌ 保存代碼到數據庫失敗:`, error.message);
+            user.ws.send(JSON.stringify({
+                type: 'save_code_error',
+                error: '保存到數據庫失敗'
+            }));
+            return;
+        }
+    } else {
+        // 本地模式：保存到內存和本地文件
+        if (!room.codeHistory) {
+            room.codeHistory = [];
+        }
+        
+        room.codeHistory.push({
+            code: code,
+            version: room.version,
+            saveName: saveName || `保存-${new Date(timestamp).toLocaleString()}`,
+            timestamp: timestamp,
+            savedBy: user.name
+        });
+
+        // 限制歷史記錄數量（本地模式）
+        if (room.codeHistory.length > 50) {
+            room.codeHistory = room.codeHistory.slice(-50);
+        }
+
+        console.log(`💾 用戶 ${user.name} 手動保存代碼到本地 - 房間: ${user.roomId}, 版本: ${room.version}, 名稱: ${saveName || '未命名'}`);
+    }
+
+    // 保存到本地文件
+    saveDataToFile();
+
+    // 發送成功回應
+    user.ws.send(JSON.stringify({
+        type: 'save_code_success',
+        version: room.version,
+        saveName: saveName || `保存-${new Date(timestamp).toLocaleString()}`,
+        timestamp: timestamp
+    }));
+
+    // 廣播版本更新給房間內其他用戶
+    broadcastToRoom(user.roomId, {
+        type: 'code_version_updated',
+        version: room.version,
+        savedBy: user.name,
+        saveName: saveName
+    }, userId);
 }
