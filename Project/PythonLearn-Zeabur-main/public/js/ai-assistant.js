@@ -97,7 +97,7 @@ class AIAssistantManager {
                 this.isProcessing = false;
                 return;
             default:
-                apiAction = 'analyze';
+                apiAction = 'explain_code'; // 默認為解釋程式
         }
 
         console.log(`🤖 發送AI請求: ${apiAction}, RequestID: ${requestId}`);
@@ -358,8 +358,11 @@ class AIAssistantManager {
                                 <div class="col-6">
                                     <div class="card">
                                         <div class="card-body p-2">
-                                            <h8><strong>💡 改進建議</strong></h8>
-                                            <p class="small mb-0">優化代碼效率和可讀性建議</p>
+                                            <h8><strong>💡 解釋程式</strong></h8>
+                                            <p class="small text-muted mb-2">分析代碼功能和邏輯結構</p>
+                                            <button class="btn btn-outline-primary btn-sm w-100" onclick="askAI('analyze')">
+                                                開始解釋
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -739,10 +742,10 @@ class AIAssistantManager {
                 <div class="col-6 mt-2">
                     <div class="card h-100">
                         <div class="card-body p-3">
-                            <h8><strong>💡 改進建議</strong></h8>
-                            <p class="small text-muted mb-2">獲得代碼優化建議</p>
-                            <button class="btn btn-outline-success btn-sm w-100" onclick="askAI('suggest')">
-                                改進代碼
+                            <h8><strong>💡 解釋程式</strong></h8>
+                            <p class="small text-muted mb-2">分析代碼功能和邏輯結構</p>
+                            <button class="btn btn-outline-primary btn-sm w-100" onclick="askAI('analyze')">
+                                開始解釋
                             </button>
                         </div>
                     </div>

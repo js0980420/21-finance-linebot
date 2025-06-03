@@ -333,35 +333,29 @@ class EditorManager {
         }
     }
 
-    // 載入代碼 - 修改為智能載入最新版本
+    // 載入 - 修改為智能載入最新版本
     loadCode(loadType = 'latest') {
-        if (loadType === 'latest') {
-            // 載入服務器最新代碼
-            if (!wsManager.isConnected()) {
-                UI.showErrorToast('未連接到服務器，無法載入代碼');
-                return;
-            }
-            
-            if (!wsManager.currentRoom) {
-                UI.showErrorToast('請先加入房間');
-                return;
-            }
-            
-            // 智能載入邏輯：先檢查是否已是最新版本
-            console.log('🔍 檢查代碼版本狀態...');
-            
-            // 請求載入房間最新代碼（服務器會返回最新版本信息）
-            wsManager.sendMessage({
-                type: 'load_code',
-                roomId: wsManager.currentRoom,
-                currentVersion: this.codeVersion // 發送當前版本號給服務器比較
-            });
-            
-            UI.showSuccessToast('正在檢查最新代碼...');
-        } else if (typeof loadType === 'number') {
-            // 載入歷史版本
-            this.loadFromHistory(loadType);
+        if (!wsManager.isConnected()) {
+            UI.showErrorToast('未連接到服務器，無法載入');
+            return;
         }
+        
+        if (!wsManager.currentRoom) {
+            UI.showErrorToast('請先加入房間');
+            return;
+        }
+        
+        // 智能載入邏輯：先檢查是否已是最新版本
+        console.log('🔍 檢查代碼版本狀態...');
+        
+        // 請求載入房間最新代碼（服務器會返回最新版本信息）
+        wsManager.sendMessage({
+            type: 'load_code',
+            roomId: wsManager.currentRoom,
+            currentVersion: this.codeVersion // 發送當前版本號給服務器比較
+        });
+        
+        UI.showSuccessToast('正在檢查最新代碼...');
     }
 
     // 運行代碼

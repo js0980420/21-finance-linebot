@@ -1441,7 +1441,7 @@ async function handleAIRequest(userId, message) {
                 response = await guideCollaboration(code, { userName: user.name, roomId: user.roomId });
                 break;
             default:
-                response = '❓ 未知的 AI 請求類型';
+                response = `❓ 未知的 AI 請求類型: ${action}。支援的功能：解釋程式(explain_code/analyze)、檢查錯誤(check_errors)、改進建議(improve_code/suggest)、協作指導(collaboration_guide)`;
                 error = 'unknown_action';
         }
         
@@ -2118,7 +2118,7 @@ async function handleLoadCode(userId, message) {
     const latestVersion = room.version || 0;
     const latestCode = room.code || '';
     
-    console.log(`📥 ${user.name} 請求載入代碼 - 當前版本: ${currentVersion}, 最新版本: ${latestVersion}`);
+    console.log(`📥 ${user.name} 請求載入 - 當前版本: ${currentVersion}, 最新版本: ${latestVersion}`);
     
     // 比較版本，判斷是否已是最新
     const isAlreadyLatest = currentVersion >= latestVersion;
