@@ -1,0 +1,98 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+客戶是中租經銷商，經營汽車、機車、手機貸款
+
+急件需求
+
+1. 客戶透過網站、email填寫表單，加入Line@可自動偵測賴名稱紀錄到SQL
+2. 每位業務都有各自的客戶，每月提醒業務追蹤客戶案款、其他需求
+3. 資訊要安全保密
+4. 盡量要能統一在賴進行，不要跳轉其他平台，原有3個Line@希望統整為同一個，希望能知道從哪個網站進來的
+
+可選
+
+1. 能讀取客戶地區、從哪裡登記的
+2. 如果客戶自己改過賴名稱，可以自動轉換
+
+詳細資訊：
+用戶人數：240位
+後台系統：原本已有一個，但跟舊合作夥伴拆夥所以想另外做一個
+
+
+
+感謝詳細說明你的專案需求！  
+你這個案例需要整合多個功能：  
+- 用戶填單自動記錄 Line 名稱至資料庫  
+- 多位業務追蹤專屬客戶、定期提醒  
+- 高資訊安全  
+- 全部出現在 Line@ 裡面，不要跳轉  
+- 希望能追蹤用戶來源（網站/註冊地/Line Name 自動追蹤更新）  
+- 並最终能串 Google Analytics 追蹤來自不同網站的流量。
+
+這些需求屬於客製化 Line Bot+CRM+資料庫系統，建議技術方案如下：
+
+### 建議架構
+1. **Line Bot 主程式**：  
+   - 可用 Node.js撰寫（最常見、適合快速部署/維護）。
+2. **後端 API（Webhook & 資料管理）**：  
+   - 透過 REST API 與 SQL 資料庫連接。
+3. **資料庫**：  
+   - 建議用 MySQL（Zeabur 可一鍵部署）。
+4. **用戶表單**：  
+   - 填單之後直接 push 資料至後端 API，API 寫入資料庫。
+5. **Line Name 綁定與主動推播**：  
+   - User 嘗試加 Line 時可發一條訊息引導認證（如套用 One-Time Token 驗證）
+6. **來源追蹤**：  
+   - 可於用戶點擊的邀請連結附帶參數並記錄於資料庫（如 UTM 機制）。
+7. **Google Analytics 統計**：  
+   - 前端表單頁加上 GTM/GA 追蹤碼。
+
+### 部署步驟規劃（使用 Zeabur）：
+1. **Bot/後端程式碼上傳 & Docker 化**  
+   請先提供你們寫好的 linebot 原始碼，或如果還沒開始可以參考 Node.js/Express + line-bot-sdk 範例專案，  
+   我會幫你產生專用 Dockerfile 和一鍵部署流程。
+2. **MySQL/Postgres 部署**  
+   Zeabur 支援模板化一鍵部署資料庫。我等下可以幫你建立。
+3. **安全性設置**  
+   啟用 Zeabur 服務獨立子網、環境變數加密、存取權限設定，另外定期備份資料庫。
+4. **多業務管理/提醒**  
+   這一塊需要在 bot 後端額外設計提醒排程，可用 crontab/NODE定時執行、Line Push API 提醒功能。
+
+---
+
+
+檔案架構包含
+package.json
+package-lock.json
+app.js/main.js
+Dockerfile
+.cursorignore(!.env，允許被讀取)
+要能夠在Zeabur上一鍵部屬
+
+以下皆使用Zeabur環境變數，不要寫在.env，. 環境變數全大寫 ✅
+LINE_CHANNEL_ACCESS_TOKEN=
+LINE_CHANNEL_SECRET=
+OPENAI_API_KEY=
+
+編碼亂碼問題 ✅
+使用 chcp 65001 設定 UTF-8 編碼
+使用 Add-Content 搭配 -Encoding UTF8 參數
+
+新增 .gitignore 例外規則 ✅
+設定了 .env* 忽略所有 .env 檔案
+但用 !.env 加入例外，讓 Cursor 可以讀取和修改
+3. 解決編碼亂碼問題 ✅
+
+🎯 Dockerfile 優化完成！
+我已根據你的建議和 2025年 Zeabur 最新標準優化了 Dockerfile：
+✅ 解決的問題：
+移除了有問題的多行 HEALTHCHECK - 改用單行語法避免 Windows 換行衝突
+簡化用戶權限管理 - 移除非必要的 nodejs 用戶設定
+新增 LABEL 標籤 - 讓 Zeabur 自動辨識為 Node.js + Express 應用
+保持健康檢查功能 - 因為你的專案已有完整的 healthcheck.js 和 /health 端點
+
+git倉庫
+https://github.com/js0980420/21-finance-linebot
