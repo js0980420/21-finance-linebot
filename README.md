@@ -1,121 +1,109 @@
-# 中租經銷商 Line Bot CRM 系統
+# 中租經銷商 Line Bot + CRM 系統
 
-## 功能特色
+## 系統功能
 
-### 核心功能
-- 🤖 **Line Bot 整合**: 客戶可透過 Line@ 進行所有操作
-- 🧠 **AI 智能客服**: 整合 OpenAI GPT 提供智能回應
-- 👥 **客戶管理**: 自動記錄客戶資訊及來源追蹤
-- 📊 **業務分配**: 自動分配客戶給業務人員
-- 📅 **定期提醒**: 每週自動提醒業務追蹤客戶
-- 🔒 **資訊安全**: 採用加密通訊及權限控制
-- 🌐 **來源追蹤**: 支援 UTM 參數追蹤客戶來源
+### 🤖 Line Bot 智能客服
+- 客戶自動註冊與身份識別
+- AI 智能對話服務 (OpenAI GPT)
+- 貸款服務諮詢 (汽車/機車/手機)
+- 業務人員自動分配
 
-### 貸款服務
-- 🚗 汽車貸款
-- 🏍️ 機車貸款  
-- 📱 手機貸款
+### 👥 業務管理功能
+- **三層權限管理**：管理者/主管/業務
+- **客戶查看**：點擊客戶 Line 名稱直接跳轉對話
+- **案件管理**：個人案件統計與追蹤
+- **業績報表**：即時統計與績效追蹤
+
+### 💻 Web CRM 系統
+- 案件列表管理
+- 客戶資料編輯
+- 權限分配管理
+- 統計報表儀表板
+
+## Line Bot 使用方式
+
+### 🔧 業務人員功能
+
+#### 1. 身份識別
+業務人員使用指定的 Line ID 即可自動識別身份：
+- `U001` - 王小明 (業務)
+- `U002` - 李美華 (業務)
+- `U006` - 黃主管 (主管)
+- `U009` - 總經理 (管理者)
+
+#### 2. 主要功能指令
+- `客戶列表` - 查看負責客戶
+- `案件管理` - 個人案件統計
+- `統計報表` - 業績數據
+- `客戶:姓名` - 搜尋特定客戶
+
+#### 3. 🎯 **一鍵跳轉客戶對話**
+在客戶列表中：
+1. 點擊客戶的 **Line 名稱** (綠色文字)
+2. 自動跳轉到該客戶的個人對話視窗
+3. 可直接開始對話聯絡
+
+### 權限說明
+- **業務人員**：只能查看自己負責的客戶
+- **部門主管**：可查看部門內所有客戶
+- **公司管理者**：可查看全部客戶資料
 
 ## 技術架構
 
-- **後端**: Node.js + Express
-- **資料庫**: MySQL 8.0
-- **Line SDK**: @line/bot-sdk
-- **AI 服務**: OpenAI GPT-3.5-turbo
-- **部署平台**: Zeabur
-- **容器化**: Docker
+- **後端**：Node.js + Express
+- **Line SDK**：@line/bot-sdk
+- **AI 服務**：OpenAI GPT-3.5
+- **資料庫**：MySQL (Zeabur)
+- **部署**：Zeabur 一鍵部署
 
-## 快速部署
+## 環境變數
 
-### 1. 環境設定
-
-**使用 Zeabur 環境變數**（不需要 .env 檔案）：
-```env
-LINE_CHANNEL_ACCESS_TOKEN=your_line_channel_access_token
-LINE_CHANNEL_SECRET=your_line_channel_secret
-OPENAI_API_KEY=your_openai_api_key
-DB_HOST=your_db_host
-DB_USER=your_db_user
-DB_PASSWORD=your_db_password
-DB_NAME=finance_crm
-FRONTEND_URL=your_frontend_url
-JWT_SECRET=your_jwt_secret
+```
+LINE_CHANNEL_ACCESS_TOKEN=你的_LINE_頻道_ACCESS_TOKEN
+LINE_CHANNEL_SECRET=你的_LINE_頻道_SECRET
+OPENAI_API_KEY=你的_OPENAI_API_KEY
 ```
 
-### 2. 本地開發
+## 本地開發
 
-安裝依賴：
 ```bash
+# 安裝依賴
 npm install
+
+# 啟動服務
+npm start
+
+# 訪問網頁版
+http://localhost:3000
 ```
 
-啟動開發模式：
-```bash
-npm run dev
-```
+## 部署到 Zeabur
 
-### 3. Zeabur 部署
+1. Fork 此專案到你的 GitHub
+2. 在 Zeabur 連接 GitHub 倉庫
+3. 設定環境變數
+4. 一鍵部署
 
-1. 推送程式碼至 Git 倉庫
-2. 在 Zeabur 控制台建立新專案
-3. 連接 Git 倉庫
-4. 設定環境變數
-5. 一鍵部署
+## 核心特色
 
-## 資料庫架構
+### 🚀 客戶跳轉功能
+- 業務在 Line OA 查看客戶資料時
+- 點擊客戶 Line 名稱即可**自動跳轉**到個人對話
+- 無需手動搜尋客戶 ID 或複製貼上
+- 提升業務工作效率
 
-### 主要資料表
+### 🔐 安全性
+- JWT 身份驗證
+- 三層權限控制
+- Rate Limiting 防止濫用
+- Helmet 安全標頭
 
-1. **customers**: 客戶基本資料
-2. **sales_staff**: 業務人員資料
-3. **customer_sales_assignments**: 客戶業務分配關係
-4. **follow_up_records**: 追蹤記錄
-5. **form_submissions**: 表單提交記錄
-6. **verification_tokens**: 驗證Token
+### 📊 智能統計
+- 即時案件狀態追蹤
+- 來源網站效果分析
+- 地區客戶分布統計
+- 業務績效排行
 
-## API 端點
+---
 
-- `POST /webhook`: Line Bot Webhook
-- `POST /api/form-submit`: 表單提交
-- `GET /health`: 健康檢查
-
-## Line Bot 功能
-
-### 主要指令
-- `註冊` / `加入`: 開始註冊流程
-- `查詢` / `狀態`: 查詢客戶資訊
-- `貸款` / `申請`: 顯示貸款選項
-- `聯絡` / `業務`: 聯絡專屬業務
-
-### 自動化功能
-- 新用戶自動歡迎訊息
-- 表單提交後自動分配業務
-- 每週一自動提醒業務追蹤客戶
-- 客戶 Line 名稱自動更新
-
-## 安全性
-
-- Helmet.js 安全標頭
-- Express Rate Limiting 請求限制
-- JWT Token 驗證
-- 環境變數加密
-- 非 root 用戶運行容器
-
-## 監控與維護
-
-- Docker 健康檢查
-- 應用程式健康檢查端點
-- 定期資料庫備份（建議）
-- 日誌記錄與監控
-
-## 擴展性
-
-系統設計支援未來擴展：
-- 微服務架構準備
-- API 模組化設計
-- 資料庫索引優化
-- 快取機制準備
-
-## 支援
-
-如有技術問題或需要協助，請聯絡開發團隊。 
+**中租經銷商專用系統** | 專業 Line Bot + CRM 解決方案 
