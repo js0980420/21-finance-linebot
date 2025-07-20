@@ -26,17 +26,26 @@ RUN apk add --no-cache \
 # 安裝 Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# 複製 Laravel 專案檔案
+# 複製專案檔案
 COPY . /app
 
-# 安裝 Composer 依賴
-RUN composer install --no-dev --optimize-autoloader --no-interaction && \
-    php artisan optimize
+# 進入 Laravel 目錄並安裝依賴
+WORKDIR /app/laravel-complete
+RUN if [ -f composer.json ]; then \
+        composer install --no-dev --optimize-autoloader --no-interaction; \
+    fi
+
+# 回到根目錄
+WORKDIR /app
 
 # 設定 Nginx
 COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
-RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache && \
-    chmod -R 775 /app/storage /app/bootstrap/cache
+
+# 設定 Laravel 文件權限
+RUN if [ -d "/app/laravel-complete/storage" ]; then \
+        chown -R www-data:www-data /app/laravel-complete/storage /app/laravel-complete/bootstrap/cache; \
+        chmod -R 775 /app/laravel-complete/storage /app/laravel-complete/bootstrap/cache; \
+    fi
 
 # 暴露端口
 EXPOSE 8080
