@@ -1,0 +1,61 @@
+{
+  "name": "21-finance-linebot",
+  "services": [
+    {
+      "name": "laravel-backend",
+      "source": {
+        "type": "git"
+      },
+      "build": {
+        "dockerfile": "Dockerfile"
+      },
+      "environment": {
+        "PORT": "8080",
+        "APP_ENV": "production",
+        "APP_KEY": "base64:YOUR_GENERATED_LARAVEL_APP_KEY",
+        "LINE_CHANNEL_ACCESS_TOKEN": "${LINE_CHANNEL_ACCESS_TOKEN}",
+        "LINE_CHANNEL_SECRET": "${LINE_CHANNEL_SECRET}",
+        "OPENAI_API_KEY": "${OPENAI_API_KEY}",
+        "DB_HOST": "${DB_HOST}",
+        "DB_USER": "${DB_USER}",
+        "DB_PASSWORD": "${DB_PASSWORD}",
+        "DB_NAME": "${DB_NAME}",
+        "FRONTEND_URL": "${FRONTEND_URL}",
+        "JWT_SECRET": "${JWT_SECRET}",
+        "TIMEZONE": "${TIMEZONE}"
+      },
+      "networking": {
+        "ports": [
+          {
+            "port": 8080,
+            "type": "HTTP"
+          }
+        ]
+      }
+    },
+    {
+      "name": "mysql-db",
+      "source": {
+        "type": "prebuilt",
+        "image": "mysql:8.0"
+      },
+      "environment": {
+        "MYSQL_ROOT_PASSWORD": "${MYSQL_ROOT_PASSWORD}",
+        "MYSQL_DATABASE": "finance_crm",
+        "MYSQL_CHARSET": "utf8mb4",
+        "MYSQL_COLLATION": "utf8mb4_unicode_ci"
+      },
+      "volumes": [
+        {
+          "name": "mysql-data",
+          "mount": "/var/lib/mysql"
+        }
+      ]
+    }
+  ],
+  "volumes": [
+    {
+      "name": "mysql-data"
+    }
+  ]
+} 
