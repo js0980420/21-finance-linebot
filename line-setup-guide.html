@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LINE Login 設定指南</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; line-height: 1.6; }
+        .step { background: #f8f9fa; border-left: 4px solid #007bff; padding: 20px; margin: 20px 0; }
+        .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 15px 0; }
+        .success { background: #d4edda; border-left: 4px solid #28a745; padding: 15px; margin: 15px 0; }
+        code { background: #f8f9fa; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', monospace; }
+        .code-block { background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0; overflow-x: auto; }
+        h1, h2 { color: #333; }
+        .btn { display: inline-block; padding: 10px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 5px; margin: 5px; }
+        .btn:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <h1>📱 LINE Login 設定指南</h1>
+    
+    <div class="success">
+        <strong>✅ 已完成的設定</strong><br>
+        您的 Laravel .env 檔案已包含 LINE Bot 設定，現在需要設定 LINE Login 功能。
+    </div>
+    
+    <div class="step">
+        <h2>步驟 1: LINE Developers Console 設定</h2>
+        <ol>
+            <li>前往 <a href="https://developers.line.biz/console/" target="_blank">LINE Developers Console</a></li>
+            <li>選擇您的 Provider</li>
+            <li>選擇您的 Channel (應該已經有 Messaging API channel)</li>
+            <li>在左側選單點選 <strong>"LINE Login"</strong></li>
+            <li>點擊 <strong>"Create"</strong> 創建 LINE Login channel</li>
+        </ol>
+    </div>
+    
+    <div class="step">
+        <h2>步驟 2: LINE Login Channel 設定</h2>
+        <ol>
+            <li><strong>Channel Name:</strong> 輸入您的應用程式名稱（例如：貸款案件管理系統）</li>
+            <li><strong>Channel Description:</strong> 輸入描述</li>
+            <li><strong>App Type:</strong> 選擇 "Web app"</li>
+            <li><strong>Email:</strong> 您的聯絡信箱</li>
+            <li>勾選同意條款後點擊 <strong>"Create"</strong></li>
+        </ol>
+    </div>
+    
+    <div class="step">
+        <h2>步驟 3: 設定 Callback URL</h2>
+        <p>在 LINE Login channel 設定中：</p>
+        <ol>
+            <li>前往 <strong>"LINE Login"</strong> 標籤</li>
+            <li>在 <strong>"Callback URL"</strong> 欄位輸入：</li>
+            <div class="code-block">http://localhost:8000/line-callback.php</div>
+            <li>點擊 <strong>"Update"</strong> 儲存</li>
+        </ol>
+        
+        <div class="warning">
+            <strong>⚠️ 重要：</strong> 如果您使用不同的網域或埠號，請相應調整 Callback URL。
+        </div>
+    </div>
+    
+    <div class="step">
+        <h2>步驟 4: 取得 Channel ID</h2>
+        <p>在 LINE Login channel 的 <strong>"Basic settings"</strong> 標籤中：</p>
+        <ol>
+            <li>複製 <strong>"Channel ID"</strong></li>
+            <li>更新以下檔案中的 Channel ID：</li>
+            <ul>
+                <li><code>line-login.php</code> 第6行</li>
+                <li><code>line-callback.php</code> 第12行</li>
+            </ul>
+        </ol>
+        
+        <div class="code-block">
+// 將這個值替換為您的 Channel ID
+$lineChannelId = '您的Channel ID';
+        </div>
+    </div>
+    
+    <div class="step">
+        <h2>步驟 5: 驗證設定</h2>
+        <p>確認您的 .env 檔案包含正確的設定：</p>
+        <div class="code-block">
+LINE_CHANNEL_ACCESS_TOKEN=您的Access Token
+LINE_CHANNEL_SECRET=您的Channel Secret
+        </div>
+    </div>
+    
+    <div class="step">
+        <h2>步驟 6: 測試 LINE Login</h2>
+        <ol>
+            <li>啟動 Laravel 開發伺服器：</li>
+            <div class="code-block">php artisan serve --host=0.0.0.0 --port=8000</div>
+            <li>開啟瀏覽器前往：<code>http://localhost:8000/line-login.php</code></li>
+            <li>點擊 "使用 LINE 登入" 按鈕</li>
+            <li>完成 LINE 登入授權</li>
+            <li>成功後應該會重導向到 dashboard.html</li>
+        </ol>
+    </div>
+    
+    <div class="success">
+        <h2>🎉 登入流程</h2>
+        <p><strong>完整流程：</strong></p>
+        <ol>
+            <li>用戶訪問 <code>line-login.php</code></li>
+            <li>點擊 LINE 登入按鈕</li>
+            <li>跳轉到 LINE 授權頁面</li>
+            <li>用戶授權後回到 <code>line-callback.php</code></li>
+            <li>系統驗證並儲存用戶資訊</li>
+            <li>重導向到 <code>dashboard.html</code></li>
+            <li>儀表板顯示用戶資訊和登出按鈕</li>
+        </ol>
+    </div>
+    
+    <div class="warning">
+        <h2>🔧 故障排除</h2>
+        <ul>
+            <li><strong>登入失敗：</strong> 檢查 Channel ID 和 Channel Secret 是否正確</li>
+            <li><strong>Callback 錯誤：</strong> 確認 Callback URL 設定正確</li>
+            <li><strong>Session 問題：</strong> 確保 PHP session 正常運作</li>
+            <li><strong>HTTPS 要求：</strong> 正式環境需要使用 HTTPS</li>
+        </ul>
+    </div>
+    
+    <div style="text-align: center; margin-top: 30px;">
+        <a href="crm-login.php" class="btn">🏠 返回登入頁面</a>
+        <a href="line-login.php" class="btn">📱 測試 LINE 登入</a>
+        <a href="dashboard.html" class="btn">📊 進入儀表板</a>
+    </div>
+    
+    <div style="margin-top: 40px; padding: 20px; background: #f8f9fa; border-radius: 5px; text-align: center; color: #666;">
+        <small>
+            📋 貸款案件管理系統 - LINE Login 整合完成<br>
+            如有問題請檢查 Laravel logs 或瀏覽器開發者工具
+        </small>
+    </div>
+</body>
+</html>
