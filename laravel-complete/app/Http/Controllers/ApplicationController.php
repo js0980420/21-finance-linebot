@@ -128,15 +128,15 @@ class ApplicationController extends Controller
         
         // 根據 URL 或 UTM 來源判斷網站代號
         if (strpos($sourceUrl, 'easypay-life.com.tw') !== false) {
-            return 'G01'; // 易付生活網站
+            return 'test'; // 易付生活網站 - 暫時改為 test 供客戶展示
         }
         
         // 可以根據不同的來源設定不同的網站代號
         switch ($utmSource) {
-            case 'facebook': return 'G02';
-            case 'google': return 'G03';
-            case 'line': return 'G04';
-            default: return 'G01';
+            case 'facebook': return 'test';
+            case 'google': return 'test';
+            case 'line': return 'test';
+            default: return 'test';
         }
     }
 
