@@ -976,7 +976,7 @@
                 // Try Laravel API first, fallback to direct PHP
                 let response;
                 try {
-                    response = await fetch('/api/applications');
+                    response = await fetch('/api-applications.php');
                 } catch (e) {
                     response = await fetch('/test-api.php');
                 }
@@ -1004,7 +1004,7 @@
                 // Try Laravel API first, fallback to direct PHP
                 let response;
                 try {
-                    response = await fetch('/api/sales-staff');
+                    response = await fetch('/api-sales-staff.php');
                 } catch (e) {
                     response = await fetch('/test-sales.php');
                 }
