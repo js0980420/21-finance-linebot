@@ -133,10 +133,10 @@ class ApplicationController extends Controller
         
         // 可以根據不同的來源設定不同的網站代號
         switch ($utmSource) {
-            case 'facebook': return 'test';
-            case 'google': return 'test';
-            case 'line': return 'test';
-            default: return 'test';
+            case 'facebook': return 'G02';
+            case 'google': return 'G03';
+            case 'line': return 'G04';
+            default: return 'G01';
         }
     }
 
