@@ -38,14 +38,34 @@ RUN if [ -f composer.json ]; then \
 # 回到根目錄
 WORKDIR /app
 
-# 設定 Nginx
-COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
-
 # 設定 Laravel 文件權限
 RUN if [ -d "/app/laravel-complete/storage" ]; then \
         chown -R www-data:www-data /app/laravel-complete/storage /app/laravel-complete/bootstrap/cache; \
         chmod -R 775 /app/laravel-complete/storage /app/laravel-complete/bootstrap/cache; \
     fi
+
+# 配置 Nginx
+RUN echo 'server { \n\
+    listen 8080; \n\
+    server_name localhost; \n\
+    root /app; \n\
+    index index.php index.html; \n\
+    location / { \n\
+        try_files $uri $uri/ /index.php?$query_string; \n\
+    } \n\
+    location ~ \.php$ { \n\
+        fastcgi_pass 127.0.0.1:9000; \n\
+        fastcgi_index index.php; \n\
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name; \n\
+        include fastcgi_params; \n\
+        fastcgi_read_timeout 300; \n\
+    } \n\
+    location /health { \n\
+        access_log off; \n\
+        return 200 "healthy\n"; \n\
+        add_header Content-Type text/plain; \n\
+    } \n\
+}' > /etc/nginx/conf.d/default.conf
 
 # 暴露端口
 EXPOSE 8080
