@@ -16,7 +16,6 @@ RUN apk add --no-cache \
     unzip \
     icu-dev \
     libzip-dev \
-    onig-dev \
     gd \
     postgresql-dev && \
     docker-php-ext-install -j$(nproc) pdo_mysql mbstring zip exif pcntl bcmath gd opcache && \
