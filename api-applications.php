@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
 try {
     // Try to connect to SQLite database
-    $dbPath = __DIR__ . '/laravel-complete/database/database.sqlite';
+    $dbPath = __DIR__ . '/database/database.sqlite';
     $dbDir = dirname($dbPath);
     
     // Create directory if not exists

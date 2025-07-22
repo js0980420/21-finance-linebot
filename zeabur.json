@@ -9,6 +9,7 @@
       "build": {
         "ignore_dockerfile": true
       },
+      "root": ".",
       "environment": {
         "PORT": "8080",
         "APP_ENV": "production",
