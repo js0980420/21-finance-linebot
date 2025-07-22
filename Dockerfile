@@ -25,6 +25,9 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 COPY . /app
 
+# Create SQLite database file before composer install
+RUN touch /app/database/database.sqlite
+
 RUN if [ -f composer.json ]; then \
         composer install --no-dev --optimize-autoloader --no-interaction; \
     fi
