@@ -93,4 +93,4 @@ EXPOSE 8080
 
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD wget --quiet --tries=1 --timeout=5 http://localhost:8080/health || exit 1
 
-CMD sh -c "php-fpm && nginx -g 'daemon off;'"
+CMD sh -c "php-fpm & nginx -g 'daemon off;'"
