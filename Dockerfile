@@ -5,29 +5,24 @@ LABEL "framework"="laravel"
 
 WORKDIR /app
 
-RUN apk add --no-cache nginx mysql-client git unzip icu-dev libzip-dev oniguruma-dev freetype-dev libjpeg-turbo-dev libpng-dev postgresql-dev
-RUN docker-php-ext-install -j$(nproc) pdo_mysql mbstring zip exif pcntl bcmath gd opcache
+RUN apk add --no-cache nginx mysql-client postgresql-client git unzip icu-dev libzip-dev oniguruma-dev freetype-dev libjpeg-turbo-dev libpng-dev
+
+RUN docker-php-ext-install -j$(nproc) pdo_mysql pdo_pgsql mbstring zip exif pcntl bcmath gd opcache
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
 COPY . /app
-
-RUN mkdir -p /app/database && touch /app/database/database.sqlite
-
-RUN composer config -g repo.packagist composer https://repo.packagist.org
-
-RUN if [ -f composer.json ]; then composer install --no-dev --optimize-autoloader --no-interaction; fi
 
 RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache || true
 RUN chmod -R 775 /app/storage /app/bootstrap/cache || true
 
-RUN mkdir -p /etc/nginx/conf.d/
+RUN composer config -g repo.packagist composer https://repo.packagist.org
+
+RUN mkdir -p /app/database && touch /app/database/database.sqlite
+
+RUN if [ -f composer.json ]; then composer install --no-dev --optimize-autoloader --no-interaction; fi
+
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY default.conf /etc/nginx/conf.d/default.conf
-
-COPY php-fpm.conf /usr/local/etc/php-fpm.d/www.conf
-
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
