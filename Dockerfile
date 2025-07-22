@@ -15,6 +15,8 @@ COPY . /app
 
 RUN mkdir -p /app/database && touch /app/database/database.sqlite
 
+RUN composer config -g repo.packagist composer https://repo.packagist.org
+
 RUN if [ -f composer.json ]; then composer install --no-dev --optimize-autoloader --no-interaction; fi
 
 RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache || true
