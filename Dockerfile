@@ -39,6 +39,8 @@ RUN if [ -d "/app/storage" ]; then \
         chmod -R 775 /app/storage /app/bootstrap/cache; \
     fi
 
+RUN mkdir -p /etc/nginx/conf.d/
+
 RUN cat > /etc/nginx/conf.d/default.conf << 'EOF'
 server {
     listen 8080;
