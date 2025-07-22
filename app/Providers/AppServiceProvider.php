@@ -11,8 +11,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // Register filesystem alias
-        $this->app->alias('filesystem', 'files');
+        // Fix for Laravel 10 Migrator bug - bind correct Filesystem instance
+        $this->app->when('Illuminate\Database\Migrations\Migrator')
+            ->needs('Illuminate\Filesystem\Filesystem')
+            ->give(function ($app) {
+                return new \Illuminate\Filesystem\Filesystem();
+            });
     }
 
     /**
