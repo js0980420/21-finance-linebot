@@ -32,6 +32,15 @@ RUN if [ -f composer.json ]; then \
         composer install --no-dev --optimize-autoloader --no-interaction; \
     fi
 
+# Generate Laravel application key if .env exists
+RUN if [ -f .env ]; then \
+        php artisan key:generate --force; \
+        php artisan migrate --force; \
+        php artisan config:cache; \
+        php artisan route:cache; \
+        php artisan view:cache; \
+    fi
+
 WORKDIR /app
 
 RUN if [ -d "/app/storage" ]; then \
