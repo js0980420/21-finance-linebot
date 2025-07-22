@@ -126,6 +126,58 @@ try {
             
             $submissionId = $pdo->lastInsertId();
             
+            // Send to n8n webhook for further processing
+            $n8nResponse = null;
+            $n8nWebhookUrl = $_ENV['N8N_WEBHOOK_URL'] ?? '';
+            if (!empty($n8nWebhookUrl)) {
+                try {
+                    $n8nData = [
+                        'submission_id' => $submissionId,
+                        'customer_name' => $customerName,
+                        'phone' => $phone,
+                        'line_id' => $lineId,
+                        'region' => $region,
+                        'email' => $email,
+                        'message' => $message,
+                        'source_url' => $sourceUrl,
+                        'ip_address' => $ipAddress,
+                        'submitted_at' => $now,
+                        'website' => (strpos($sourceUrl, 'easypay-life.com.tw') !== false) ? 'test' : 'G01'
+                    ];
+                    
+                    $ch = curl_init();
+                    curl_setopt($ch, CURLOPT_URL, $n8nWebhookUrl);
+                    curl_setopt($ch, CURLOPT_POST, true);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($n8nData));
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                        'Content-Type: application/json',
+                        'User-Agent: Finance-Linebot-Webhook/1.0'
+                    ]);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+                    
+                    $n8nResponse = curl_exec($ch);
+                    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                    curl_close($ch);
+                    
+                    // Log n8n response
+                    file_put_contents($logFile, json_encode([
+                        'timestamp' => date('Y-m-d H:i:s'),
+                        'n8n_webhook_url' => $n8nWebhookUrl,
+                        'n8n_data_sent' => $n8nData,
+                        'n8n_response' => $n8nResponse,
+                        'n8n_http_code' => $httpCode
+                    ], JSON_UNESCAPED_UNICODE) . "\n", FILE_APPEND | LOCK_EX);
+                    
+                } catch (Exception $n8nError) {
+                    // Log n8n error but don't fail the main process
+                    file_put_contents($logFile, json_encode([
+                        'timestamp' => date('Y-m-d H:i:s'),
+                        'n8n_error' => $n8nError->getMessage()
+                    ], JSON_UNESCAPED_UNICODE) . "\n", FILE_APPEND | LOCK_EX);
+                }
+            }
+            
             echo json_encode([
                 'success' => true,
                 'message' => '表單提交成功',
@@ -135,7 +187,8 @@ try {
                     'phone' => $phone,
                     'region' => $region,
                     'line_id' => $lineId
-                ]
+                ],
+                'n8n_sent' => !empty($n8nWebhookUrl)
             ], JSON_UNESCAPED_UNICODE);
             
         } else {

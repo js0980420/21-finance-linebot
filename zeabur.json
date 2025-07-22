@@ -23,7 +23,9 @@
         "DB_NAME": "${DB_NAME}",
         "FRONTEND_URL": "${FRONTEND_URL}",
         "JWT_SECRET": "${JWT_SECRET}",
-        "TIMEZONE": "${TIMEZONE}"
+        "TIMEZONE": "${TIMEZONE}",
+        "N8N_WEBHOOK_URL": "${N8N_WEBHOOK_URL}",
+        "N8N_API_KEY": "${N8N_API_KEY}"
       },
       "networking": {
         "ports": [
