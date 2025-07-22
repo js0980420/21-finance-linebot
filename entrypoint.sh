@@ -1,4 +1,3 @@
-```sh
 #!/bin/sh
 set -e
 
@@ -22,4 +21,3 @@ php artisan view:cache || true
 
 php-fpm &
 nginx -g "daemon off;"
-```
