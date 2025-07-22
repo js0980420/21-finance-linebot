@@ -33,7 +33,7 @@ RUN if [ -f composer.json ]; then \
     fi
 
 # Generate Laravel application key if .env exists
-RUN if [ -f .env ]; then \
+RUN if [ -f .env ] || [ -n "$APP_ENV" ]; then \
         php artisan key:generate --force; \
         php artisan migrate --force; \
         php artisan config:cache; \
@@ -53,6 +53,8 @@ RUN mkdir -p /etc/nginx/conf.d/
 RUN cat > /etc/nginx/conf.d/default.conf << 'EOF'
 server {
     listen 8080;
+    access_log /dev/stdout;
+    error_log /dev/stderr;
     server_name localhost;
     root /app/public;
     index index.php index.html;
