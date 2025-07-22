@@ -7,7 +7,7 @@
         "type": "git"
       },
       "build": {
-        "dockerfile": "Dockerfile"
+        "ignore_dockerfile": true
       },
       "environment": {
         "PORT": "8080",
