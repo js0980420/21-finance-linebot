@@ -13,6 +13,8 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 COPY . /app
 
+RUN mkdir -p /app/database && touch /app/database/database.sqlite
+
 RUN if [ -f composer.json ]; then composer install --no-dev --optimize-autoloader --no-interaction; fi
 
 RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache || true
