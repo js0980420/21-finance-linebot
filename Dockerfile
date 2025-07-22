@@ -12,7 +12,7 @@ RUN apk add --no-cache \
     unzip \
     icu-dev \
     libzip-dev \
-    libonig-dev \
+    oniguruma-dev \
     freetype-dev \
     libjpeg-turbo-dev \
     libpng-dev \
@@ -25,23 +25,22 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 COPY . /app
 
-WORKDIR /app/laravel-complete
 RUN if [ -f composer.json ]; then \
         composer install --no-dev --optimize-autoloader --no-interaction; \
     fi
 
 WORKDIR /app
 
-RUN if [ -d "/app/laravel-complete/storage" ]; then \
-        chown -R www-data:www-data /app/laravel-complete/storage /app/laravel-complete/bootstrap/cache; \
-        chmod -R 775 /app/laravel-complete/storage /app/laravel-complete/bootstrap/cache; \
+RUN if [ -d "/app/storage" ]; then \
+        chown -R www-data:www-data /app/storage /app/bootstrap/cache; \
+        chmod -R 775 /app/storage /app/bootstrap/cache; \
     fi
 
 RUN cat > /etc/nginx/conf.d/default.conf << 'EOF'
 server {
     listen 8080;
     server_name localhost;
-    root /app/laravel-complete/public;
+    root /app/public;
     index index.php index.html;
     charset utf-8;
 
