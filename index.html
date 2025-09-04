@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>貸款案件管理系統 - 待處理案件</title>
+    <link rel="stylesheet" href="style.css"> <!-- Placeholder for CSS -->
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <nav class="navigation">
+                <ul>
+                    <li><a href="#">儀錶板 <span class="badge" id="dashboard-count">0</span></a></li>
+                    <li><a href="#">聊天室 <span class="badge" id="chatroom-count">0</span></a></li>
+                    <li><a href="#">網路進線 <span class="badge" id="network-inbound-count">0</span></a></li>
+                    <li class="has-submenu">
+                        <a href="#">進件管理</a>
+                        <ul class="submenu">
+                            <li><a href="#">有效客 <span class="badge" id="valid-customers-count">0</span></a></li>
+                            <li><a href="#">無效客 <span class="badge" id="invalid-customers-count">0</span></a></li>
+                            <li><a href="#">客服 <span class="badge" id="customer-service-count">0</span></a></li>
+                            <li><a href="#">黑名單 <span class="badge" id="blacklist-count">0</span></a></li>
+                        </ul>
+                    </li>
+                    <li class="has-submenu">
+                        <a href="#">送件管理</a>
+                        <ul class="submenu">
+                            <li><a href="#">核准撥款 <span class="badge" id="approved-disbursed-count">0</span></a></li>
+                            <li><a href="#">核准未撥 <span class="badge" id="approved-undisbursed-count">0</span></a></li>
+                            <li><a href="#">附條件 <span class="badge" id="conditional-approval-count">0</span></a></li>
+                            <li><a href="#">婉拒 <span class="badge" id="rejected-count">0</span></a></li>
+                        </ul>
+                    </li>
+                    <li class="has-submenu">
+                        <a href="#">業務管理</a>
+                        <ul class="submenu">
+                            <li><a href="#">追蹤管理 <span class="badge" id="tracking-management-count">0</span></a></li>
+                            <li><a href="#">追蹤行事曆 <span class="badge" id="tracking-calendar-count">0</span></a></li>
+                            <li><a href="#">追蹤紀錄 <span class="badge" id="tracking-record-count">0</span></a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="main-content">
+            <header class="header">
+                <!-- Header content will go here -->
+            </header>
+
+            <div id="dashboard-content" class="content-section" style="display: none;">
+                <h2>儀錶板</h2>
+                <p>儀錶板的內容將顯示在這裡。</p>
+            </div>
+
+            <div id="chatroom-content" class="content-section" style="display: none;">
+                <h2>聊天室</h2>
+                <p>聊天室的內容將顯示在這裡。</p>
+            </div>
+
+            <section class="content-area content-section" id="network-inbound-content">
+                <h2>網路進線</h2>
+                <p>顯示來自 WP 表單的進件 (可搜尋、編輯、刪除)</p>
+
+                <div class="network-inbound-list-header">
+                    <h3>網路進線列表</h3>
+                    <div class="actions">
+                        <input type="text" placeholder="搜尋姓名/手機/Email/LINE/網站." class="search-input">
+                        <select class="filter-select">
+                            <option value="all">全部承辦</option>
+                            <!-- More options will go here -->
+                        </select>
+                        <button class="refresh-button">重新整理</button>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table id="network-inbound-table">
+                        <thead>
+                            <tr>
+                                <th>案件狀態</th>
+                                <th>案件編號 <span class="sort-icon"></span></th>
+                                <th>時間 <span class="sort-icon"></span></th>
+                                <th>承辦業務 <span class="sort-icon"></span></th>
+                                <th>來源管道</th>
+                                <th>LINE資訊</th>
+                                <th>諮詢項目</th>
+                                <th>網站</th>
+                                <th>聯絡資訊</th>
+                                <th>地區/地址</th>
+                                <th>需求金額</th>
+                                <th>自定義欄位</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Cases will be rendered here by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination-controls">
+                    <span>顯示第1到5筆,共10筆記錄 每頁顯示:</span>
+                    <select class="items-per-page-select">
+                        <option value="5">5筆</option>
+                        <option value="10">10筆</option>
+                    </select>
+                    <button class="prev-page">上一頁</button>
+                    <span class="page-number">1</span>
+                    <span class="page-number">2</span>
+                    <button class="next-page">下一頁</button>
+                </div>
+            </section>
+
+            <div id="valid-customers-content" class="content-section" style="display: none;">
+                <h2>有效客</h2>
+                <div class="table-container">
+                    <table id="valid-customers-table">
+                        <thead>
+                            <tr>
+                                <th>案件狀態</th>
+                                <th>案件編號</th>
+                                <th>時間</th>
+                                <th>承辦業務</th>
+                                <th>來源管道</th>
+                                <th>LINE資訊</th>
+                                <th>諮詢項目</th>
+                                <th>網站</th>
+                                <th>聯絡資訊</th>
+                                <th>地區/地址</th>
+                                <th>需求金額</th>
+                                <th>自定義欄位</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Cases will be rendered here by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="invalid-customers-content" class="content-section" style="display: none;">
+                <h2>無效客</h2>
+                <div class="table-container">
+                    <table id="invalid-customers-table">
+                        <thead>
+                            <tr>
+                                <th>案件狀態</th>
+                                <th>案件編號</th>
+                                <th>時間</th>
+                                <th>承辦業務</th>
+                                <th>來源管道</th>
+                                <th>LINE資訊</th>
+                                <th>諮詢項目</th>
+                                <th>網站</th>
+                                <th>聯絡資訊</th>
+                                <th>地區/地址</th>
+                                <th>需求金額</th>
+                                <th>自定義欄位</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Cases will be rendered here by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="customer-service-content" class="content-section" style="display: none;">
+                <h2>客服</h2>
+                <div class="table-container">
+                    <table id="customer-service-table">
+                        <thead>
+                            <tr>
+                                <th>案件狀態</th>
+                                <th>案件編號</th>
+                                <th>時間</th>
+                                <th>承辦業務</th>
+                                <th>來源管道</th>
+                                <th>LINE資訊</th>
+                                <th>諮詢項目</th>
+                                <th>網站</th>
+                                <th>聯絡資訊</th>
+                                <th>地區/地址</th>
+                                <th>需求金額</th>
+                                <th>自定義欄位</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Cases will be rendered here by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="blacklist-content" class="content-section" style="display: none;">
+                <h2>黑名單</h2>
+                <div class="table-container">
+                    <table id="blacklist-table">
+                        <thead>
+                            <tr>
+                                <th>案件狀態</th>
+                                <th>案件編號</th>
+                                <th>時間</th>
+                                <th>承辦業務</th>
+                                <th>來源管道</th>
+                                <th>LINE資訊</th>
+                                <th>諮詢項目</th>
+                                <th>網站</th>
+                                <th>聯絡資訊</th>
+                                <th>地區/地址</th>
+                                <th>需求金額</th>
+                                <th>自定義欄位</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Cases will be rendered here by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="approved-disbursed-content" class="content-section" style="display: none;">
+                <h2>核准撥款</h2>
+                <div class="table-container">
+                    <table id="approved-disbursed-table">
+                        <thead>
+                            <tr>
+                                <th>案件狀態</th>
+                                <th>案件編號</th>
+                                <th>時間</th>
+                                <th>承辦業務</th>
+                                <th>來源管道</th>
+                                <th>LINE資訊</th>
+                                <th>諮詢項目</th>
+                                <th>網站</th>
+                                <th>聯絡資訊</th>
+                                <th>地區/地址</th>
+                                <th>需求金額</th>
+                                <th>自定義欄位</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Cases will be rendered here by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="approved-undisbursed-content" class="content-section" style="display: none;">
+                <h2>核准未撥</h2>
+                <div class="table-container">
+                    <table id="approved-undisbursed-table">
+                        <thead>
+                            <tr>
+                                <th>案件狀態</th>
+                                <th>案件編號</th>
+                                <th>時間</th>
+                                <th>承辦業務</th>
+                                <th>來源管道</th>
+                                <th>LINE資訊</th>
+                                <th>諮詢項目</th>
+                                <th>網站</th>
+                                <th>聯絡資訊</th>
+                                <th>地區/地址</th>
+                                <th>需求金額</th>
+                                <th>自定義欄位</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Cases will be rendered here by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="conditional-approval-content" class="content-section" style="display: none;">
+                <h2>附條件</h2>
+                <div class="table-container">
+                    <table id="conditional-approval-table">
+                        <thead>
+                            <tr>
+                                <th>案件狀態</th>
+                                <th>案件編號</th>
+                                <th>時間</th>
+                                <th>承辦業務</th>
+                                <th>來源管道</th>
+                                <th>LINE資訊</th>
+                                <th>諮詢項目</th>
+                                <th>網站</th>
+                                <th>聯絡資訊</th>
+                                <th>地區/地址</th>
+                                <th>需求金額</th>
+                                <th>自定義欄位</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Cases will be rendered here by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="rejected-content" class="content-section" style="display: none;">
+                <h2>婉拒</h2>
+                <div class="table-container">
+                    <table id="rejected-table">
+                        <thead>
+                            <tr>
+                                <th>案件狀態</th>
+                                <th>案件編號</th>
+                                <th>時間</th>
+                                <th>承辦業務</th>
+                                <th>來源管道</th>
+                                <th>LINE資訊</th>
+                                <th>諮詢項目</th>
+                                <th>網站</th>
+                                <th>聯絡資訊</th>
+                                <th>地區/地址</th>
+                                <th>需求金額</th>
+                                <th>自定義欄位</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Cases will be rendered here by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="tracking-management-content" class="content-section" style="display: none;">
+                <h2>追蹤管理</h2>
+                <div class="table-container">
+                    <table id="tracking-management-table">
+                        <thead>
+                            <tr>
+                                <th>客戶等級</th>
+                                <th>案件狀態</th>
+                                <th>案件編號</th>
+                                <th>時間</th>
+                                <th>承辦業務</th>
+                                <th>來源管道</th>
+                                <th>LINE資訊</th>
+                                <th>諮詢項目</th>
+                                <th>網站</th>
+                                <th>聯絡資訊</th>
+                                <th>地區/地址</th>
+                                <th>需求金額</th>
+                                <th>自定義欄位</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Cases will be rendered here by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="tracking-calendar-content" class="content-section" style="display: none;">
+                <h2>追蹤行事曆</h2>
+                <div class="calendar-container">
+                    <div class="calendar-header">
+                        <button id="prevMonth">上個月</button>
+                        <h3 id="currentMonthYear"></h3>
+                        <button id="nextMonth">下個月</button>
+                    </div>
+                    <div class="calendar-weekdays">
+                        <div>日</div>
+                        <div>一</div>
+                        <div>二</div>
+                        <div>三</div>
+                        <div>四</div>
+                        <div>五</div>
+                        <div>六</div>
+                    </div>
+                    <div class="calendar-days" id="calendarDays"></div>
+                </div>
+                <div id="daily-contacts-modal" class="modal">
+                    <div class="modal-content">
+                        <span class="close-button">&times;</span>
+                        <h3 id="modalDate"></h3>
+                        <div id="modalCasesList"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tracking-record-content" class="content-section" style="display: none;">
+                <h2>追蹤紀錄</h2>
+
+                <div class="customer-details-container">
+                    <div class="customer-info-header">
+                        <div class="info-row"><span class="info-label">客戶編號:</span> <span class="info-value">2508230107</span></div>
+                        <div class="info-row"><span class="info-label">客戶姓名:</span> <span class="info-value">陳怡文</span></div>
+                        <div class="info-row"><span class="info-label">性別:</span> <span class="info-value">女/2002/6/9 23歲</span></div>
+                        <div class="info-row"><span class="info-label">身份證號:</span> <span class="info-value">0223081303</span></div>
+                        <div class="info-row"><span class="info-label">主要電話:</span> <span class="info-value">0910212683</span></div>
+                        <div class="info-row"><span class="info-label">服務階段:</span> <span class="info-value">開發階段/有效媒體</span></div>
+                        <div class="info-row"><span class="info-label">責任人員:</span> <span class="info-value">耀文件</span></div>
+                        <div class="info-row"><span class="info-label">未聯結天數:</span> <span class="info-value">3</span></div>
+                        <div class="info-row"><span class="info-label">階段進度:</span> <span class="info-value">評估中</span></div>
+                    </div>
+
+                    <div class="customer-details-tabs">
+                        <a href="#" class="tab-item active">客戶資料維護</a>
+                        <a href="#" class="tab-item">負債信用狀況</a>
+                        <a href="#" class="tab-item">客戶群組</a>
+                        <a href="#" class="tab-item">聯徵照會/案件</a>
+                        <a href="#" class="tab-item">客戶接續紀錄</a>
+                        <a href="#" class="tab-item">分配記錄</a>
+                        <a href="#" class="tab-item">維護進度紀錄</a>
+                        <a href="#" class="tab-item">客戶文件管理</a>
+                        <a href="#" class="tab-item">合約管理</a>
+                        <a href="#" class="tab-item">處理辦項目</a>
+                    </div>
+
+                    <h3>客戶資料→維護進度紀錄</h3>
+                    <div class="table-container">
+                        <table id="progress-record-table">
+                            <thead>
+                                <tr>
+                                    <th>記錄人員</th>
+                                    <th>聯絡時間</th>
+                                    <th>服務階段</th>
+                                    <th>案件編號</th>
+                                    <th>維護進度</th>
+                                    <th>聯絡狀態</th>
+                                    <th>聯絡方式</th>
+                                    <th>說明</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>羅仕傑</td>
+                                    <td>2025/08/26 15:50</td>
+                                    <td>開發階段-有效媒體</td>
+                                    <td>C2508260064</td>
+                                    <td>評估中</td>
+                                    <td>聯繫評估</td>
+                                    <td>電話聯繫</td>
+                                    <td>溝通歷程: 年資未滿3個月,學貸繳款日1號已逾期26天.有請客戶過還請家人協助先幫忙.LINE請客戶還準備資料</td>
+                                    <td><a href="#">編輯</a></td>
+                                </tr>
+                                <tr>
+                                    <td>羅仕傑</td>
+                                    <td>2025/08/26 14:43</td>
+                                    <td>開發階段-有效媒體</td>
+                                    <td>C2508260064</td>
+                                    <td>未聯絡</td>
+                                    <td>聯繫評估</td>
+                                    <td>系統記錄</td>
+                                    <td>新媒體分配</td>
+                                    <td><a href="#">編輯</a></td>
+                                </tr>
+                                <tr>
+                                    <td>林秉</td>
+                                    <td>2025/08/26 14:42</td>
+                                    <td>開發階段-機會媒體</td>
+                                    <td>B2508250045</td>
+                                    <td>有效運作</td>
+                                    <td>開發成功</td>
+                                    <td>電話聯繫</td>
+                                    <td>客已截匯附健保快譯通明細,車錢多萊希望可整合或做小額.客希望能貸滿20萬</td>
+                                    <td><a href="#">編輯</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3>客戶資料→客戶文件管理</h3>
+                    <div class="table-container">
+                        <table id="document-management-table">
+                            <thead>
+                                <tr>
+                                    <th>文件類型</th>
+                                    <th>文件名稱</th>
+                                    <th>最新上傳日期</th>
+                                    <th>上傳人員</th>
+                                    <th>上傳狀態</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>共同基本文件</td>
+                                    <td>技術士證照</td>
+                                    <td>2025/08/26 11:50</td>
+                                    <td>林</td>
+                                    <td>已完成</td>
+                                    <td><a href="#">編輯</a> | <a href="#">上傳檔案</a> | <a href="#">檢視文件</a> | <a href="#">刪除</a></td>
+                                </tr>
+                                <tr>
+                                    <td>工作財力文件</td>
+                                    <td>健保個人投資保資料</td>
+                                    <td>2025/08/26 14:41</td>
+                                    <td>林秉</td>
+                                    <td>已完成</td>
+                                    <td><a href="#">編輯</a> | <a href="#">上傳檔案</a> | <a href="#">檢校文件</a> | <a href="#">刪除</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="notification" class="notification-popup">
+        <p>🔔 新案件通知：網路進線有新案件！請業務盡快聯絡該新客。</p>
+        <button class="close-notification">X</button>
+    </div>
+
+    <button id="triggerNotification" style="position: fixed; bottom: 80px; right: 20px; padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">觸發新案件通知</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const notification = document.getElementById('notification');
+            const closeButton = document.querySelector('.close-notification');
+            const triggerButton = document.getElementById('triggerNotification');
+
+            // Calendar related elements
+            const calendarDays = document.getElementById('calendarDays');
+            const currentMonthYear = document.getElementById('currentMonthYear');
+            const prevMonthBtn = document.getElementById('prevMonth');
+            const nextMonthBtn = document.getElementById('nextMonth');
+
+            let date = new Date();
+            let currentYear = date.getFullYear();
+            let currentMonth = date.getMonth();
+
+            const months = [
+                "一月", "二月", "三月", "四月", "五月", "六月",
+                "七月", "八月", "九月", "十月", "十一月", "十二月"
+            ];
+
+            // Content switching logic: Declare these variables at the top of DOMContentLoaded
+            const navLinks = document.querySelectorAll('.sidebar .navigation a');
+            const contentSections = document.querySelectorAll('.content-section');
+
+            function hideAllContentSections() {
+                if (contentSections) { // Add null/empty check
+                    contentSections.forEach(section => {
+                        section.style.display = 'none';
+                    });
+                }
+            }
+
+            function showContentSection(id, activeLinkText) {
+                hideAllContentSections();
+                const targetSection = document.getElementById(id);
+                if (targetSection) {
+                    targetSection.style.display = 'block';
+                }
+
+                // Update active class for sidebar links
+                if (navLinks) { // Add null/empty check
+                    navLinks.forEach(item => item.classList.remove('active'));
+                    const currentActiveLink = Array.from(navLinks).find(link => link.textContent.includes(activeLinkText));
+                    if (currentActiveLink) {
+                        currentActiveLink.classList.add('active');
+                    }
+                }
+            }
+
+            function showNotification() {
+                notification.classList.add('show');
+                setTimeout(() => {
+                    hideNotification();
+                }, 5000); // 5秒後自動隱藏
+            }
+
+            function hideNotification() {
+                notification.classList.remove('show');
+            }
+
+            closeButton.addEventListener('click', hideNotification);
+            triggerButton.addEventListener('click', showNotification);
+
+            const casesData = [
+                {
+                    id: "CASE250904012",
+                    status: "unassigned",
+                    customerLevel: "A",
+                    contactSchedule: "2024-05-15", // Changed to a past date for testing overdue feature
+                    time: "2025/09/04<br>上午01:04",
+                    assignee: "未指派",
+                    source: "網站表單",
+                    lineInfo: "@ 1111",
+                    consultationItem: "二胎房貸",
+                    website: "房貸先生<br>easypay-life.com.tw",
+                    contactInfo: "未提供<br>0911111111",
+                    location: "臺北市",
+                    demandAmount: "30萬以下",
+                    customField: "無自定義欄位",
+                    operation: "<span class=\"action-icons\">◎ →</span>"
+                },
+                {
+                    id: "CASE250902011",
+                    status: "unassigned",
+                    customerLevel: "A",
+                    contactSchedule: "2025-09-11",
+                    time: "2025/09/02<br>上午12:31",
+                    assignee: "未指派",
+                    source: "網站表單",
+                    lineInfo: "@ 123",
+                    consultationItem: "二胎房貸",
+                    website: "房貸先生<br>easypay-life.com.tw",
+                    contactInfo: "未提供<br>0912345678",
+                    location: "臺北市<br>測試地址",
+                    demandAmount: "200-300萬",
+                    customField: "無自定義欄位",
+                    operation: "<span class=\"action-icons\">◎ →</span>"
+                },
+                {
+                    id: "CASE250902010",
+                    status: "unassigned",
+                    customerLevel: "A",
+                    contactSchedule: "2025-09-10",
+                    time: "2025/09/02<br>上午12:28",
+                    assignee: "未指派",
+                    source: "網站表單",
+                    lineInfo: "@zx456",
+                    consultationItem: "汽機車貸",
+                    website: "房貸先生<br>easypay-life.com.tw",
+                    contactInfo: "qw12345678@gmail.com<br>0912345678",
+                    location: "臺北市<br>測試",
+                    demandAmount: "100-200萬",
+                    customField: "無自定義欄位",
+                    operation: "<span class=\"action-icons\">◎ →</span>"
+                },
+                {
+                    id: "CASE250901009",
+                    status: "unassigned",
+                    customerLevel: "A",
+                    contactSchedule: "2025-09-12",
+                    time: "2025/09/01<br>上午12:23",
+                    assignee: "未指派",
+                    source: "網站表單",
+                    lineInfo: "@ 1111",
+                    consultationItem: "二胎房貸",
+                    website: "房貸先生<br>easypay-life.com.tw",
+                    contactInfo: "未提供<br>0911111111",
+                    location: "臺北市",
+                    demandAmount: "30萬以下",
+                    customField: "無自定義欄位",
+                    operation: "<span class=\"action-icons\">◎ →</span>"
+                },
+                {
+                    id: "CASE250831008",
+                    status: "unassigned",
+                    customerLevel: "A",
+                    contactSchedule: "2025-09-11",
+                    time: "2025/08/31<br>下午11:31",
+                    assignee: "未指派",
+                    source: "網站表單",
+                    lineInfo: "@zx456",
+                    consultationItem: "汽機車貸",
+                    website: "房貸先生<br>easypay-life.com.tw",
+                    contactInfo: "as12345678@gmail.com<br>0912345678",
+                    location: "臺北市<br>測試地址",
+                    demandAmount: "30萬以下",
+                    customField: "無自定義欄位",
+                    operation: "<span class=\"action-icons\">◎ →</span>"
+                }
+            ];
+
+            function renderTable(cases, targetTableId) {
+                const tableBody = document.querySelector(`#${targetTableId} tbody`);
+                if (!tableBody) return;
+
+                tableBody.innerHTML = ''; // Clear existing rows
+
+                cases.forEach(caseItem => {
+                    const row = tableBody.insertRow();
+                    row.setAttribute('data-case-id', caseItem.id); // Add data-case-id for easy lookup
+
+                    // Add Customer Level dropdown for tracking-management-table
+                    if (targetTableId === 'tracking-management-table') {
+                        const customerLevelCell = row.insertCell();
+                        customerLevelCell.innerHTML = `
+                            <select class="customer-level-select" data-case-id="${caseItem.id}">
+                                <option value="A" ${caseItem.customerLevel === 'A' ? 'selected' : ''}>A</option>
+                                <option value="B" ${caseItem.customerLevel === 'B' ? 'selected' : ''}>B</option>
+                                <option value="C" ${caseItem.customerLevel === 'C' ? 'selected' : ''}>C</option>
+                            </select>
+                        `;
+                    }
+
+                    const statusCell = row.insertCell();
+                    statusCell.innerHTML = `
+                        <select class="case-status-select" data-case-id="${caseItem.id}">
+                            <option value="unassigned" ${caseItem.status === 'unassigned' ? 'selected' : ''}>未指派</option>
+                            <option value="valid-customer" ${caseItem.status === 'valid-customer' ? 'selected' : ''}>有效客</option>
+                            <option value="invalid-customer" ${caseItem.status === 'invalid-customer' ? 'selected' : ''}>無效客</option>
+                            <option value="customer-service" ${caseItem.status === 'customer-service' ? 'selected' : ''}>客服</option>
+                            <option value="blacklist" ${caseItem.status === 'blacklist' ? 'selected' : ''}>黑名單</option>
+                            <option value="approved-disbursed" ${caseItem.status === 'approved-disbursed' ? 'selected' : ''}>核准撥款</option>
+                            <option value="approved-undisbursed" ${caseItem.status === 'approved-undisbursed' ? 'selected' : ''}>核准未撥</option>
+                            <option value="conditional-approval" ${caseItem.status === 'conditional-approval' ? 'selected' : ''}>附條件</option>
+                            <option value="rejected" ${caseItem.status === 'rejected' ? 'selected' : ''}>婉拒</option>
+                            <option value="tracking" ${caseItem.status === 'tracking' ? 'selected' : ''}>追蹤管理</option>
+                        </select>
+                    `;
+
+                    row.insertCell().textContent = caseItem.id;
+                    row.insertCell().innerHTML = caseItem.time;
+                    row.insertCell().innerHTML = `${caseItem.assignee} <span class="assign-icon"></span>`;
+                    row.insertCell().textContent = caseItem.source;
+                    row.insertCell().textContent = caseItem.lineInfo;
+                    row.insertCell().textContent = caseItem.consultationItem;
+                    row.insertCell().innerHTML = caseItem.website;
+                    row.insertCell().innerHTML = caseItem.contactInfo;
+                    row.insertCell().innerHTML = caseItem.location;
+                    row.insertCell().textContent = caseItem.demandAmount;
+                    row.insertCell().textContent = caseItem.customField;
+                    row.insertCell().innerHTML = caseItem.operation;
+                });
+
+                // Add event listeners to the new select elements
+                tableBody.querySelectorAll('.case-status-select').forEach(selectElement => {
+                    selectElement.addEventListener('change', (event) => {
+                        const caseId = event.target.dataset.caseId;
+                        const newStatus = event.target.value;
+                        updateCaseStatus(caseId, newStatus);
+                    });
+                });
+
+                // Add event listeners to customer level select elements for tracking-management-table
+                if (targetTableId === 'tracking-management-table') {
+                    tableBody.querySelectorAll('.customer-level-select').forEach(selectElement => {
+                        selectElement.addEventListener('change', (event) => {
+                            const caseId = event.target.dataset.caseId;
+                            const newLevel = event.target.value;
+                            updateCustomerLevel(caseId, newLevel);
+                        });
+                    });
+                }
+            }
+
+            function updateCaseStatus(caseId, newStatus) {
+                const caseIndex = casesData.findIndex(c => c.id === caseId);
+                if (caseIndex > -1) {
+                    casesData[caseIndex].status = newStatus;
+                    renderAllTables(); // Re-render all tables after status update
+                }
+            }
+
+            function updateCustomerLevel(caseId, newLevel) {
+                const caseIndex = casesData.findIndex(c => c.id === caseId);
+                if (caseIndex > -1) {
+                    casesData[caseIndex].customerLevel = newLevel;
+                    renderAllTables(); // Re-render all tables after customer level update
+                }
+            }
+
+            // New functions for contact status and rescheduling
+            function markAsContacted(caseId) {
+                const caseIndex = casesData.findIndex(c => c.id === caseId);
+                if (caseIndex > -1) {
+                    casesData[caseIndex].contactSchedule = null; // Mark as contacted by removing schedule
+                    renderAllTables();
+                    generateCalendar();
+                }
+            }
+
+            function rescheduleContact(caseId) {
+                const newDateStr = prompt("請輸入新的聯絡日期 (YYYY-MM-DD):", "2025-09-15"); // Placeholder for date input
+                if (newDateStr) {
+                    const newDate = new Date(newDateStr);
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0); // Reset time for accurate comparison
+
+                    if (newDate < today) {
+                        alert("聯絡日期不能早於今天，請重新輸入。");
+                        return;
+                    }
+
+                    const caseIndex = casesData.findIndex(c => c.id === caseId);
+                    if (caseIndex > -1) {
+                        casesData[caseIndex].contactSchedule = newDateStr;
+                        renderAllTables();
+                        generateCalendar();
+                    }
+                }
+            }
+
+            function generateCalendar() {
+                calendarDays.innerHTML = '';
+                currentMonthYear.textContent = `${months[currentMonth]} ${currentYear}`;
+
+                const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
+                const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+                // Fill in leading empty days (previous month's days)
+                for (let i = 0; i < firstDayOfMonth; i++) {
+                    const dayBox = document.createElement('div');
+                    dayBox.classList.add('empty-day');
+                    calendarDays.appendChild(dayBox);
+                }
+
+                const formattedCurrentMonth = (currentMonth + 1).toString().padStart(2, '0');
+                const currentMonthCases = casesData.filter(caseItem => {
+                    if (!caseItem.contactSchedule) return false;
+                    const [year, month, day] = caseItem.contactSchedule.split('-');
+                    return parseInt(year) === currentYear && parseInt(month) === (currentMonth + 1);
+                });
+
+                // Fill in days of the current month
+                for (let i = 1; i <= daysInMonth; i++) {
+                    const dayBox = document.createElement('div');
+                    dayBox.classList.add('calendar-day');
+                    dayBox.textContent = i;
+
+                    const formattedDay = i.toString().padStart(2, '0');
+                    const fullDate = `${currentYear}-${formattedCurrentMonth}-${formattedDay}`;
+
+                    const dailyContacts = currentMonthCases.filter(caseItem => caseItem.contactSchedule === fullDate);
+                    if (dailyContacts.length > 0) {
+                        const countSpan = document.createElement('span');
+                        countSpan.classList.add('contact-count');
+                        countSpan.textContent = dailyContacts.length;
+                        dayBox.appendChild(countSpan);
+                        dayBox.classList.add('has-contacts');
+                        dayBox.dataset.date = fullDate; // Store full date for modal
+
+                        // Add click event listener to show modal
+                        dayBox.addEventListener('click', () => showDailyContactsModal(fullDate, dailyContacts));
+                    }
+                    
+                    // Check for overdue contacts (past date with uncontacted cases)
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0); // Reset time for accurate date comparison
+                    const calendarDayDate = new Date(currentYear, currentMonth, i);
+
+                    if (calendarDayDate < today && dailyContacts.length > 0) {
+                        dayBox.classList.add('overdue');
+                        const warningIcon = document.createElement('span');
+                        warningIcon.classList.add('warning-icon');
+                        warningIcon.textContent = ' ⚠️'; // Add a warning icon
+                        dayBox.appendChild(warningIcon);
+                    }
+
+                    calendarDays.appendChild(dayBox);
+                }
+            }
+
+            function showDailyContactsModal(date, contacts) {
+                document.getElementById('modalDate').textContent = date;
+                const modalCasesList = document.getElementById('modalCasesList');
+                modalCasesList.innerHTML = '';
+                contacts.forEach(caseItem => {
+                    const p = document.createElement('p');
+                    p.innerHTML = `
+                        案件編號: ${caseItem.id}, 客戶等級: ${caseItem.customerLevel}
+                        <button class="mark-contacted-btn" data-case-id="${caseItem.id}">已聯絡</button>
+                        <button class="reschedule-btn" data-case-id="${caseItem.id}">重新安排</button>
+                    `;
+                    modalCasesList.appendChild(p);
+                });
+                document.getElementById('daily-contacts-modal').style.display = 'block';
+
+                // Add event listeners for new buttons inside the modal
+                modalCasesList.querySelectorAll('.mark-contacted-btn').forEach(button => {
+                    button.addEventListener('click', (event) => {
+                        const caseId = event.target.dataset.caseId;
+                        markAsContacted(caseId);
+                        hideDailyContactsModal();
+                    });
+                });
+                modalCasesList.querySelectorAll('.reschedule-btn').forEach(button => {
+                    button.addEventListener('click', (event) => {
+                        const caseId = event.target.dataset.caseId;
+                        rescheduleContact(caseId);
+                    });
+                });
+            }
+
+            function hideDailyContactsModal() {
+                document.getElementById('daily-contacts-modal').style.display = 'none';
+            }
+
+            function renderAllTables() {
+                // Filter cases for each section and render them
+                renderTable(casesData.filter(c => c.status === 'unassigned'), 'network-inbound-table');
+                renderTable(casesData.filter(c => c.status === 'valid-customer'), 'valid-customers-table');
+                renderTable(casesData.filter(c => c.status === 'invalid-customer'), 'invalid-customers-table');
+                renderTable(casesData.filter(c => c.status === 'customer-service'), 'customer-service-table');
+                renderTable(casesData.filter(c => c.status === 'blacklist'), 'blacklist-table');
+                renderTable(casesData.filter(c => c.status === 'approved-disbursed'), 'approved-disbursed-table');
+                renderTable(casesData.filter(c => c.status === 'approved-undisbursed'), 'approved-undisbursed-table');
+                renderTable(casesData.filter(c => c.status === 'conditional-approval'), 'conditional-approval-table');
+                renderTable(casesData.filter(c => c.status === 'rejected'), 'rejected-table');
+                
+                // For tracking management, show all cases except invalid-customer and blacklist
+                renderTable(casesData.filter(c => c.status !== 'invalid-customer' && c.status !== 'blacklist'), 'tracking-management-table');
+
+                updateSidebarCounts(); // Update sidebar counts after all tables are rendered
+            }
+
+            function updateSidebarCounts() {
+                const counts = casesData.reduce((acc, caseItem) => {
+                    acc[caseItem.status] = (acc[caseItem.status] || 0) + 1;
+                    return acc;
+                }, {});
+
+                // Helper function to update badge text and class
+                function updateBadge(id, count, className) {
+                    const badgeElement = document.getElementById(id);
+                    if (badgeElement) {
+                        badgeElement.textContent = count > 0 ? count : '';
+                        // Remove existing color classes before adding new one
+                        badgeElement.classList.remove('badge-red-circle', 'badge-green-square', 'badge-green-circle');
+                        if (count > 0 && className) {
+                            badgeElement.classList.add(className);
+                        }
+                    }
+                }
+
+                updateBadge('dashboard-count', counts.dashboard || 0, 'badge-red-circle');
+                updateBadge('chatroom-count', counts.chatroom || 0, 'badge-red-circle');
+                updateBadge('network-inbound-count', counts.unassigned || 0, 'badge-red-circle');
+                updateBadge('valid-customers-count', counts['valid-customer'] || 0, 'badge-red-circle');
+                updateBadge('invalid-customers-count', counts['invalid-customer'] || 0, 'badge-red-circle');
+                updateBadge('customer-service-count', counts['customer-service'] || 0, 'badge-red-circle');
+                updateBadge('blacklist-count', counts.blacklist || 0, 'badge-red-circle');
+                updateBadge('approved-disbursed-count', counts['approved-disbursed'] || 0, 'badge-red-circle');
+                updateBadge('approved-undisbursed-count', counts['approved-undisbursed'] || 0, 'badge-red-circle');
+                updateBadge('conditional-approval-count', counts['conditional-approval'] || 0, 'badge-green-square');
+                updateBadge('rejected-count', counts.rejected || 0, 'badge-green-square');
+                
+                // For tracking management, count all cases except invalid-customer and blacklist
+                const trackingCount = casesData.filter(c => c.status !== 'invalid-customer' && c.status !== 'blacklist').length;
+                updateBadge('tracking-management-count', trackingCount, 'badge-green-circle');
+
+                // For tracking calendar, count all cases with a contact schedule
+                const trackingCalendarCount = casesData.filter(c => c.contactSchedule).length;
+                updateBadge('tracking-calendar-count', trackingCalendarCount, 'badge-red-circle');
+
+                updateBadge('tracking-record-count', counts.record || 0, 'badge-red-circle');
+
+            }
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (event) => {
+                    event.preventDefault();
+
+                    let targetId = '';
+                    let activeLinkText = '';
+                    const linkText = link.textContent.trim();
+
+                    if (linkText.includes('儀錶板')) {
+                        targetId = 'dashboard-content';
+                        activeLinkText = '儀錶板';
+                    } else if (linkText.includes('聊天室')) {
+                         targetId = 'chatroom-content';
+                         activeLinkText = '聊天室';
+                    } else if (linkText.includes('網路進線')) {
+                        targetId = 'network-inbound-content';
+                        activeLinkText = '網路進線';
+                    } else if (linkText.includes('有效客')) {
+                        targetId = 'valid-customers-content';
+                        activeLinkText = '有效客';
+                    } else if (linkText.includes('無效客')) {
+                        targetId = 'invalid-customers-content';
+                        activeLinkText = '無效客';
+                    } else if (linkText.includes('客服')) {
+                        targetId = 'customer-service-content';
+                        activeLinkText = '客服';
+                    } else if (linkText.includes('黑名單')) {
+                        targetId = 'blacklist-content';
+                        activeLinkText = '黑名單';
+                    } else if (linkText.includes('核准撥款')) {
+                        targetId = 'approved-disbursed-content';
+                        activeLinkText = '核准撥款';
+                    } else if (linkText.includes('核准未撥')) {
+                        targetId = 'approved-undisbursed-content';
+                        activeLinkText = '核准未撥';
+                    } else if (linkText.includes('附條件')) {
+                        targetId = 'conditional-approval-content';
+                        activeLinkText = '附條件';
+                    } else if (linkText.includes('婉拒')) {
+                        targetId = 'rejected-content';
+                        activeLinkText = '婉拒';
+                    } else if (linkText.includes('追蹤管理')) {
+                        targetId = 'tracking-management-content';
+                        activeLinkText = '追蹤管理';
+                    } else if (linkText.includes('追蹤行事曆')) {
+                        targetId = 'tracking-calendar-content';
+                        activeLinkText = '追蹤行事曆';
+                    } else if (linkText.includes('追蹤紀錄')) {
+                        targetId = 'tracking-record-content';
+                        activeLinkText = '追蹤紀錄';
+                    }
+
+                    if (targetId) {
+                        showContentSection(targetId, activeLinkText);
+                    }
+                });
+            });
+
+            // Initial setup when page loads
+            renderAllTables();
+            generateCalendar(); // Generate calendar on initial load
+            showContentSection('network-inbound-content', '網路進線'); // Show '網路進線' content and set active link initially
+
+            document.querySelector('#daily-contacts-modal .close-button').addEventListener('click', hideDailyContactsModal);
+            window.addEventListener('click', (event) => {
+                if (event.target == document.getElementById('daily-contacts-modal')) {
+                    hideDailyContactsModal();
+                }
+            });
+
+            prevMonthBtn.addEventListener('click', () => {
+                currentMonth--;
+                if (currentMonth < 0) {
+                    currentMonth = 11;
+                    currentYear--;
+                }
+                generateCalendar();
+            });
+
+            nextMonthBtn.addEventListener('click', () => {
+                currentMonth++;
+                if (currentMonth > 11) {
+                    currentMonth = 0;
+                    currentYear++;
+                }
+                generateCalendar();
+            });
+        });
+    </script>
+</body>
+</html>
