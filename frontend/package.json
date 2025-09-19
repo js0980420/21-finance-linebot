@@ -1,0 +1,41 @@
+{
+  "name": "admin-template",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "cross-env NODE_ENV=development nuxt dev --port 3301 --host 0.0.0.0",
+    "dev:local": "cross-env NODE_ENV=development NUXT_PUBLIC_API_BASE_URL=http://localhost:9221/api nuxt dev --port 3301 --host localhost",
+    "dev:prod-api": "cross-env NODE_ENV=development NUXT_PUBLIC_API_BASE_URL=https://dev-finance.mercylife.cc/api nuxt dev --port 3301 --host localhost",
+    "build:prod": "cross-env NODE_ENV=production nuxt build",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "test": "vitest",
+    "test:unit": "vitest run --reporter=verbose",
+    "test:watch": "vitest watch",
+    "test:coverage": "vitest run --coverage",
+    "test:ui": "vitest --ui",
+    "test:all": "npm run test:unit"
+  },
+  "dependencies": {
+    "@heroicons/vue": "^2.1.5",
+    "@nuxt/ui": "^2.18.7",
+    "@pinia/nuxt": "^0.5.5",
+    "firebase": "^10.14.1",
+    "nuxt": "^3.13.0",
+    "pinia": "^2.2.4",
+    "sweetalert2": "^11.22.3",
+    "vue": "latest"
+  },
+  "devDependencies": {
+    "@nuxt/devtools": "^1.5.2",
+    "@nuxt/kit": "^3.13.0",
+    "@vitejs/plugin-vue": "^6.0.1",
+    "@vue/test-utils": "^2.4.6",
+    "cross-env": "^7.0.3",
+    "happy-dom": "^18.0.1",
+    "typescript": "^5.6.3",
+    "vitest": "^3.2.4"
+  }
+}

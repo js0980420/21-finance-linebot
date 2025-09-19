@@ -1,0 +1,182 @@
+name: Finance CICD
+
+on:
+  push:
+    branches: [ master, develop ]
+
+jobs:
+  deploy:
+    name: 部署應用程式
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref == 'refs/heads/master' && 'production' || 'development' }}
+    
+    steps:
+      - name: 取出程式碼
+        uses: actions/checkout@v4
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -p 8022 -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy via SSH
+        env:
+          BRANCH_NAME: ${{ github.ref_name }}
+        run: |
+          echo "開始連接到部署主機..."
+          
+          ssh -p 8022 -i ~/.ssh/id_ed25519 -o ServerAliveInterval=60 -o ServerAliveCountMax=3 -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
+            set -e  # 在任何命令失敗時立即退出
+            
+            BRANCH_NAME="${BRANCH_NAME}"
+            
+            echo "========================================="
+            echo "開始部署程序..."
+            echo "當前分支: \$BRANCH_NAME"
+            echo "========================================="
+            
+            # 主機驗證資訊 (防止GitHub Actions遮罩)
+            echo "🔍 主機驗證資訊:"
+            
+            # 使用變數避免直接輸出可能被遮罩的內容
+            HOSTNAME_INFO=\$(hostname)
+            IP_INFO=\$(hostname -I | awk '{print \$1}' 2>/dev/null || echo "IP獲取失敗")
+            USER_INFO=\$(whoami)
+            OS_INFO=\$(uname -s)
+            DATE_INFO=\$(date '+%Y-%m-%d %H:%M:%S')
+            PWD_INFO=\$(pwd)
+            
+            echo "主機名稱: [\$HOSTNAME_INFO]"
+            echo "主機IP: [\$IP_INFO]"  
+            echo "作業系統: \$OS_INFO"
+            echo "當前使用者: \$USER_INFO"
+            echo "當前時間: \$DATE_INFO"
+            echo "當前目錄: \$PWD_INFO"
+            echo "========================================="
+
+            if [[ "\$BRANCH_NAME" == "master" ]]; then
+              DEPLOY_PATH="project/bonus/finance"
+            elif [[ "\$BRANCH_NAME" == "develop" ]]; then
+              DEPLOY_PATH="project/bonus/develop/finance0810_D"
+            else
+              echo "No deploy path set for this branch: \$BRANCH_NAME"
+              exit 1
+            fi
+
+            echo "📁 部署路徑驗證:"
+            echo "目標部署路徑: \$DEPLOY_PATH"
+            
+            # 驗證部署目錄是否存在
+            if [ ! -d "\$DEPLOY_PATH" ]; then
+              echo "❌ 錯誤: 部署目錄不存在 - \$DEPLOY_PATH"
+              exit 1
+            fi
+            
+            echo "✅ 部署目錄存在"
+            echo "切換到部署目錄: \$DEPLOY_PATH"
+            cd \$DEPLOY_PATH || { echo "❌ 無法切換到部署目錄"; exit 1; }
+            
+            # 驗證Git倉庫
+            if [ ! -d ".git" ]; then
+              echo "❌ 錯誤: 此目錄不是Git倉庫"
+              exit 1
+            fi
+            
+            echo "📊 倉庫資訊:"
+            echo "Git倉庫URL: \$(git remote get-url origin)"
+            echo "當前Git分支: \$(git branch --show-current)"
+            echo "最後提交: \$(git log -1 --oneline)"
+            echo "========================================="
+            
+            # 備份當前的 .env 檔案
+            if [ -f .env ]; then
+              cp .env .env.backup
+              echo "已備份 .env 檔案"
+            fi
+            
+            # 拉取最新程式碼
+            echo "拉取最新程式碼..."
+            git pull || { echo "Git pull 失敗"; exit 1; }
+            
+            # 如果 .env 被覆蓋，則恢復備份
+            if [ -f .env.backup ]; then
+              cp .env.backup .env
+              rm .env.backup
+              echo "已恢復 .env 檔案"
+            fi
+                        
+            # 僅重新建構並啟動前端服務
+            docker compose up -d --build frontend
+            
+            # 如果後端未運行，則啟動後端（不重新建構）
+            if [ "\$BACKEND_RUNNING" = "false" ]; then
+              docker compose up -d backend mysql redis phpmyadmin
+              echo "等待後端服務啟動完成..."
+              sleep 30
+              
+              # 執行資料庫遷移（僅在後端重新啟動時）
+              docker compose exec -T backend php artisan migrate --force
+              
+              # 執行資料庫填充（如果需要）
+              docker compose exec -T backend php artisan db:seed --force --class=RolesAndPermissionsSeeder
+            fi
+
+            # 每次都執行migrate
+            echo "執行migrate"
+            docker compose exec -T backend php artisan migrate --force
+            
+            # 清除快取（每次部署都執行）
+            echo "🧹 清除應用程式快取..."
+            docker compose exec -T backend php artisan config:cache
+            docker compose exec -T backend php artisan route:cache
+            docker compose exec -T backend php artisan view:cache
+            
+            # 最終部署驗證
+            echo "========================================="
+            echo "🎯 最終部署驗證:"
+            echo "========================================="
+            
+            # 檢查所有容器狀態
+            echo "📊 所有容器狀態:"
+            docker compose ps
+            echo ""
+            
+            # 檢查容器健康狀態
+            UNHEALTHY_CONTAINERS=\$(docker compose ps --filter "status=unhealthy" --format "table {{.Service}}")
+            if [ -n "\$UNHEALTHY_CONTAINERS" ] && [ "\$UNHEALTHY_CONTAINERS" != "SERVICE" ]; then
+              echo "⚠️  發現不健康的容器:"
+              echo "\$UNHEALTHY_CONTAINERS"
+            else
+              echo "✅ 所有容器狀態正常"
+            fi
+            
+            # 驗證關鍵服務是否正在運行
+            REQUIRED_SERVICES=("frontend" "backend" "mysql" "redis")
+            for service in "\${REQUIRED_SERVICES[@]}"; do
+              if [ "\$(docker compose ps -q \$service)" ]; then
+                echo "✅ \$service 服務正在運行"
+              else
+                echo "❌ \$service 服務未運行"
+              fi
+            done
+            
+            # 顯示服務網路資訊
+            echo ""
+            echo "🌐 網路資訊:"
+            echo "容器網路: \$(docker compose ps --format 'table {{.Service}}\t{{.Ports}}')"
+            
+            echo "========================================="
+            echo "🎉 部署完成！"
+            echo "分支: \$BRANCH_NAME"
+            echo "主機: \$(hostname)"
+            echo "部署路徑: \$DEPLOY_PATH"
+            echo "完成時間: \$(date)"
+            echo "========================================="
+          EOF
+
+      - name: Cleanup SSH key
+        if: always()
+        run: |
+          rm -f ~/.ssh/id_ed25519
