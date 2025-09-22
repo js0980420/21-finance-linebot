@@ -1,0 +1,698 @@
+/* Basic styling for the layout */
+html, body {
+    height: 100%; /* Ensure html and body take full height */
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    display: flex;
+    /* Remove height: 100vh; and overflow: hidden; to allow natural page scrolling */
+    flex-direction: column; /* Allow main content to push footer down */
+}
+
+.container {
+    display: flex;
+    width: 100%;
+    flex: 1; /* Allow container to grow and take available space */
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #333;
+    color: white;
+    padding: 20px;
+    overflow-y: auto; /* Enable scrolling for sidebar if content is long */
+}
+
+.sidebar h2 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.navigation ul {
+    list-style: none;
+    padding: 0;
+}
+
+.navigation li {
+    margin-bottom: 10px;
+}
+
+.navigation a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    display: block;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.navigation a:hover,
+.navigation a.active {
+    background-color: #575757;
+}
+
+.navigation .badge {
+    background-color: #007bff;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    margin-left: 5px;
+}
+
+.red-background {
+    background-color: #f8d7da; /* Light red */
+    color: #721c24; /* Dark red text */
+    border-color: #f5c6cb; /* Reddish border */
+}
+
+.navigation .has-submenu > a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navigation .has-submenu > a::after {
+    content: '▼';
+    font-size: 0.8em;
+    transition: transform 0.3s ease;
+}
+
+.navigation .has-submenu.active > a::after {
+    transform: rotate(180deg);
+}
+
+.navigation .submenu {
+    list-style: none;
+    padding-left: 20px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
+.navigation .has-submenu.active .submenu {
+    max-height: 200px; /* Adjust as needed */
+}
+
+.navigation .submenu li a {
+    padding: 8px 15px;
+    font-size: 0.9em;
+}
+
+.main-content {
+    flex-grow: 1;
+    background-color: #f4f4f4;
+    padding: 20px;
+    overflow-y: auto; /* Enable scrolling for main content */
+}
+
+.header {
+    background-color: white;
+    padding: 15px 20px;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header h1 {
+    margin: 0;
+    color: #333;
+}
+
+.content-section {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.content-section h2 {
+    color: #333;
+    margin-top: 0;
+}
+
+/* Table styling */
+.table-container {
+    overflow-x: auto;
+    margin-top: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+table thead th {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+table tbody td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    vertical-align: middle;
+}
+
+table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+.hidden-column {
+    display: none;
+}
+
+.sort-icon {
+    margin-left: 5px;
+    font-size: 0.8em;
+    vertical-align: middle;
+}
+
+/* Pagination Controls */
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.pagination-controls span,
+.pagination-controls button,
+.pagination-controls select {
+    margin: 0 5px;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+    cursor: pointer;
+}
+
+.pagination-controls button:hover {
+    background-color: #e2e6ea;
+}
+
+.pagination-controls .page-number {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+/* Search and Filter */
+.network-inbound-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.network-inbound-list-header .actions {
+    display: flex;
+    gap: 10px;
+}
+
+.search-input,
+.filter-select {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.refresh-button {
+    padding: 8px 15px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.refresh-button:hover {
+    background-color: #218838;
+}
+
+/* Customer Level Cards (Tracking Management) */
+.customer-level-cards {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+    margin-bottom: 30px;
+}
+
+.customer-level-cards .card {
+    flex: 1;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.customer-level-cards .card.level-a {
+    background-color: #d4edda; /* Greenish */
+    color: #155724;
+}
+
+.customer-level-cards .card.level-b {
+    background-color: #fff3cd; /* Yellowish */
+    color: #856404;
+}
+
+.customer-level-cards .card.level-c {
+    background-color: #f8d7da; /* Reddish */
+    color: #721c24;
+}
+
+.customer-level-cards h3 {
+    margin-top: 0;
+    font-size: 1.2em;
+}
+
+.customer-level-cards p {
+    margin-bottom: 0;
+    font-size: 0.9em;
+}
+
+/* Tracking Record Customer Details */
+.customer-details-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.customer-info-header {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+}
+
+.info-row {
+    display: flex;
+    align-items: center;
+}
+
+.info-label {
+    font-weight: bold;
+    margin-right: 5px;
+    color: #555;
+}
+
+.info-value {
+    color: #333;
+}
+
+.customer-details-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 20px;
+}
+
+.customer-details-tabs .tab-item {
+    padding: 10px 15px;
+    text-decoration: none;
+    color: #555;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    border-bottom: 2px solid transparent;
+}
+
+.customer-details-tabs .tab-item:hover,
+.customer-details-tabs .tab-item.active {
+    color: #007bff;
+    border-bottom-color: #007bff;
+}
+
+.page-description {
+    background-color: #e9ecef;
+    color: #495057;
+    padding: 15px;
+    border-left: 5px solid #007bff;
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+
+.page-description p {
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Modal Styling */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    display: flex; /* Use flexbox for centering */
+    align-items: center; /* Center vertically */
+    justify-content: center; /* Center horizontally */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    padding: 20px;
+    border: 1px solid #888;
+    border-radius: 0; /* Remove border-radius for full screen */
+    width: 100%; /* Make width full screen */
+    max-width: 100vw; /* Ensure max-width is full viewport width */
+    max-height: 100vh; /* Ensure max-height is full viewport height */
+    overflow-y: auto; /* Enable vertical scrolling for content */
+    box-shadow: none; /* Remove shadow for full screen */
+    position: relative;
+}
+
+.modal-content h2 {
+    text-align: center;
+    margin-top: 0;
+    color: #333;
+}
+
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    right: 20px;
+    top: 10px;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* New section for editing cases */
+#edit-case-section {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #f4f4f4; /* Match main content background or choose a suitable color */
+    z-index: 999; /* Ensure it covers other content */
+    overflow-y: auto; /* Enable scrolling for the entire section if content overflows */
+    padding: 20px;
+    box-sizing: border-box; /* Include padding in width/height calculation */
+}
+
+#edit-case-section h2 {
+    text-align: center;
+    margin-top: 0;
+    color: #333;
+}
+
+/* Form field styling for edit modal */
+.edit-case-form-fields {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr); /* Six columns for horizontal layout */
+    gap: 20px; /* Space between grid items */
+    margin-top: 20px;
+}
+
+/* Adjust responsiveness for smaller screens */
+@media (max-width: 1400px) {
+    .edit-case-form-fields {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 1000px) {
+    .edit-case-form-fields {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .edit-case-form-fields {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .edit-case-form-fields {
+        grid-template-columns: 1fr;
+    }
+}
+
+.form-group-section {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    background-color: #f9f9f9;
+}
+
+.form-group-section h3 {
+    margin-top: 0;
+    color: #007bff;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+.form-field label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.form-field input[type="text"],
+.form-field input[type="email"],
+.form-field input[type="date"],
+.form-field select,
+.form-field textarea {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%;
+    box-sizing: border-box; /* Include padding and border in element's total width and height */
+}
+
+.form-field input[type="checkbox"] {
+    margin-top: 10px;
+    width: auto;
+}
+
+.form-field textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+}
+
+.action-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+.action-button.submit-case-button {
+    background-color: #007bff;
+    color: white;
+}
+
+.action-button.submit-case-button:hover {
+    background-color: #0056b3;
+}
+
+.action-button.schedule-tracking-button {
+    background-color: #6c757d;
+    color: white;
+}
+
+.action-button.schedule-tracking-button:hover {
+    background-color: #5a6268;
+}
+
+.action-button.edit-case-button {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.action-button.edit-case-button:hover {
+    background-color: #138496;
+}
+
+/* Styling for selected status dropdown */
+.case-status-select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 1em;
+}
+
+.case-status-select.status-unassigned {
+    background-color: #f8d7da; /* Light red */
+    color: #721c24;
+    border-color: #f5c6cb;
+}
+
+.case-status-select.status-valid_customer {
+    background-color: #f8d7da; /* Light red */
+    color: #721c24;
+    border-color: #f5c6cb;
+}
+
+.case-status-select.status-invalid_customer,
+.case-status-select.status-blacklist {
+    background-color: #f8d7da; /* Light red */
+    color: #721c24;
+    border-color: #f5c6cb;
+}
+
+.case-status-select.status-customer_service {
+    background-color: #cce5ff; /* Light blue */
+    color: #004085;
+    border-color: #b8daff;
+}
+
+.case-status-select.status-approved_disbursed {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+}
+
+.case-status-select.status-approved_undisbursed,
+.case-status-select.status-conditional_approval,
+.case-status-select.status-rejected {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+}
+
+.case-status-select.status-tracking {
+    background-color: #fff3cd; /* Light yellow */
+    color: #856404;
+    border-color: #ffeeba;
+}
+
+/* Calendar Styling */
+.calendar-container {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.calendar-header h3 {
+    margin: 0;
+    color: #333;
+}
+
+.calendar-header button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.calendar-header button:hover {
+    background-color: #0056b3;
+}
+
+.calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+.calendar-day {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    margin: 2px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+}
+
+.calendar-day:hover:not(.empty-day) {
+    background-color: #e9ecef;
+}
+
+.calendar-day.empty-day {
+    background-color: #f8f8f8;
+    cursor: default;
+}
+
+/* Daily Contacts Modal */
+#daily-contacts-modal .modal-content {
+    max-width: 600px;
+    padding: 25px;
+}
+
+#daily-contacts-modal h3 {
+    margin-top: 0;
+    color: #007bff;
+}
+
+#modalCasesList p {
+    background-color: #e9ecef;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    border-left: 3px solid #007bff;
+}

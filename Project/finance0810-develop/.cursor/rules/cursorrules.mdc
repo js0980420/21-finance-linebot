@@ -1,0 +1,33 @@
+---
+description:
+  - `migration` 檔案的順序必須維持不變，不能打亂。所有註解和頁面說明都應使用繁體中文，並解釋清楚，以便業主和工程師夥伴閱讀。
+globs:
+alwaysApply: true
+---
+
+
+前端啟動
+按照以下步驟操作：
+1.在終端機中，先進入前端目錄：
+cd frontend
+2.啟動前端開發伺服器：http://localhost:9121/
+npm run dev:local
+
+
+帳號：admin@finance-crm.com
+密碼：admin123
+
+
+Docker
+重建Docker在根目錄(docker-compose.yml位置)(有變更才建置新映像)
+docker-compose up --build -d
+
+強制重建映像
+docker-compose up --build --force-recreate -d
+
+查看nginx日誌
+docker logs finance0810-develop-backend-1
+
+
+進入 php-fpm 容器
+docker exec -it finance0810-develop-php-fpm-1 /bin/sh
