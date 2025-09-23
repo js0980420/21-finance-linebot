@@ -56,9 +56,8 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction --ignore-pl
 
 # --- 新增以下行來建立 www-data 使用者和群組 ---
 # 確保 www-data group 和 user 存在 (Alpine Linux)
-# 使用 || true 是為了防止如果使用者已經存在時，命令不會導致建置失敗
-RUN addgroup -g 82 www-data || true && \
-    adduser -u 82 -D -S -G www-data www-data || true
+RUN addgroup -g 82 www-data && \
+    adduser -u 82 -D -S -G www-data www-data
 # --- 結束新增 ---
 
 # 清除任何現有的 Laravel 快取，並確保以 www-data 使用者執行
