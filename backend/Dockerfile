@@ -2,19 +2,18 @@ FROM php:8.2-fpm-alpine
 
 # Install system dependencies
 RUN apk update && apk add --no-cache \
-    nginx \
     supervisor \
     mysql-client \
     zip \
     unzip \
-    git \
     curl \
     libpng-dev \
     oniguruma-dev \
     libxml2-dev \
     freetype-dev \
     libjpeg-turbo-dev \
-    libzip-dev
+    libzip-dev \
+    && rm -rf /var/cache/apk/* # 清理 apk 快取
 
 # Install PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
@@ -54,6 +53,13 @@ RUN set -eux; \
 # Remove outdated lock file and install dependencies with platform requirement ignoring
 # 這裡的 composer install 應該在 chown 之後，確保生成的 vendor 檔案權限正確
 RUN composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-req=ext-grpc
+
+# --- 新增以下行來建立 www-data 使用者和群組 ---
+# 確保 www-data group 和 user 存在 (Alpine Linux)
+# 使用 || true 是為了防止如果使用者已經存在時，命令不會導致建置失敗
+RUN addgroup -g 82 www-data || true && \
+    adduser -u 82 -D -S -G www-data www-data || true
+# --- 結束新增 ---
 
 # 清除任何現有的 Laravel 快取，並確保以 www-data 使用者執行
 # 注意：這在建置時運行，所以來自 docker-compose 的環境變數將不可用
