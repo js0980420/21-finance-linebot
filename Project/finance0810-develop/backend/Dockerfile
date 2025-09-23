@@ -51,7 +51,7 @@ RUN set -eux; \
     chown -R www-data:www-data bootstrap storage; \
     chmod -R 775 bootstrap storage
 
-# Install PHP dependencies  
+# Install PHP dependencies
 # Handle potential lock file sync issues and platform requirements
 # Remove outdated lock file and install dependencies with platform requirement ignoring
 RUN rm -f composer.lock && \

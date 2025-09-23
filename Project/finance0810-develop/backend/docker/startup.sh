@@ -14,9 +14,21 @@ php artisan route:clear
 php artisan view:clear
 php artisan cache:clear
 
+# Install Composer dependencies
+echo "Installing Composer dependencies..."
+composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-req=ext-grpc
+
+# Generate application key
+echo "Generating Laravel application key..."
+php artisan key:generate
+
 # Run database migrations
 echo "Running database migrations..."
 php artisan migrate --force
+
+# Run database seeds
+echo "Running database seeders..."
+php artisan db:seed --force
 
 # Cache configuration for better performance (with updated env vars)
 echo "Caching configuration..."

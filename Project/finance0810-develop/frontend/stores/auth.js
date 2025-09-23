@@ -1,14 +1,25 @@
+import { defineStore } from 'pinia'
+import { ref, computed, readonly, nextTick } from 'vue'
+
 export const useAuthStore = defineStore('auth', () => {
+  // 權限角色定義（與後端保持一致）
+  const roles = {
+    ADMIN: 'admin', // 系統管理員
+    EXECUTIVE: 'executive', // 經銷商/公司高層
+    MANAGER: 'manager', // 行政人員/主管
+    STAFF: 'staff' // 業務人員
+  }
+
   // 用戶狀態
   const user = ref(null)
   const isLoggedIn = computed(() => !!user.value && !!user.value.token)
   const token = computed(() => user.value?.token || null)
-  
+
   // 初始化狀態追蹤
   const _isInitializing = ref(false)
   const _isInitialized = ref(false)
   const _initPromise = ref(null)
-  
+
   // 權限檢查
   const isExecutive = computed(() => user.value?.role === roles.EXECUTIVE)
   const isAdmin = computed(() => user.value?.role === roles.ADMIN)
@@ -33,14 +44,6 @@ export const useAuthStore = defineStore('auth', () => {
     return user.value.permissions?.includes(permission)
   }
   
-  // 權限角色定義（與後端保持一致）
-  const roles = {
-    ADMIN: 'admin', // 系統管理員
-    EXECUTIVE: 'executive', // 經銷商/公司高層
-    MANAGER: 'manager', // 行政人員/主管
-    STAFF: 'staff' // 業務人員
-  }
-
   // 移除模擬用戶數據，改為完全使用 API
 
   // 登入功能
@@ -176,12 +179,19 @@ export const useAuthStore = defineStore('auth', () => {
 
   // 初始化用戶狀態 - 單例模式，防止多次並發初始化
   const initializeAuth = async (force = false) => {
+    // 開發環境跳過初始化，直接返回true（因為有自動登入）
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('Development mode: skipping auth initialization')
+      _isInitialized.value = true
+      return true
+    }
+
     // 如果已經初始化完成且不是強制重新初始化，直接返回結果
     if (_isInitialized.value && !force) {
       console.log('Auth already initialized, skipping')
       return isLoggedIn.value
     }
-    
+
     // 如果正在初始化中，返回現有的 Promise
     if (_isInitializing.value && _initPromise.value && !force) {
       console.log('Auth initialization in progress, waiting for existing promise')
@@ -192,7 +202,7 @@ export const useAuthStore = defineStore('auth', () => {
         return false
       }
     }
-    
+
     if (!process.client) {
       return false
     }
@@ -294,10 +304,16 @@ export const useAuthStore = defineStore('auth', () => {
   
   // 等待初始化完成的輔助方法
   const waitForInitialization = async () => {
+    // 開發環境直接返回true
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('Development mode: skipping wait for initialization')
+      return true
+    }
+
     if (_isInitialized.value) {
       return isLoggedIn.value
     }
-    
+
     if (_isInitializing.value && _initPromise.value) {
       try {
         return await _initPromise.value
@@ -306,7 +322,7 @@ export const useAuthStore = defineStore('auth', () => {
         return false
       }
     }
-    
+
     // 如果沒有進行初始化，啟動初始化
     return await initializeAuth()
   }

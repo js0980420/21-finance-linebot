@@ -1,5 +1,6 @@
 export default defineNuxtPlugin(async () => {
   // Initialize auth store on client side only
+  const { useAuthStore } = await import('~/stores/auth')
   const authStore = useAuthStore()
   
   // Initialize authentication state on app startup using singleton pattern

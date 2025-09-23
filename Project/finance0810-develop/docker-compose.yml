@@ -23,7 +23,6 @@ services:
     ports:
       - "${BACKEND_PORT}:8000"
     volumes:
-      - ./backend:/var/www/html
       - backend_bootstrap_cache:/var/www/html/bootstrap/cache
     environment:
       - APP_NAME=${APP_NAME}
@@ -81,7 +80,6 @@ services:
       start_period: 30s
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./database/init:/docker-entrypoint-initdb.d
     networks:
       - crm-network
     restart: unless-stopped

@@ -8,7 +8,7 @@
       <!-- 標題列 -->
       <div class="sticky top-0 z-10 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
         <h2 class="text-xl font-semibold text-gray-900">
-          {{ isEdit ? '編輯案件' : '新增案件' }}
+          {{ isEdit ? '編輯案件' : '新增案件' }} - 水平布局測試
         </h2>
         <div class="flex space-x-3">
           <button
@@ -28,624 +28,629 @@
         </div>
       </div>
 
-      <!-- 表單內容 -->
+      <!-- 表單內容 - 6大區塊水平排列 -->
       <form @submit.prevent="saveCase" class="p-6">
-        <!-- 基本資訊區塊 -->
-        <div class="mb-8">
-          <h3 class="text-lg font-medium text-gray-900 mb-4 border-b border-gray-200 pb-2">
-            基本資訊
-          </h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            <!-- 案件狀態 -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">案件狀態</label>
-              <select
-                v-model="form.status"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option v-for="(label, value) in caseStatusOptions" :key="value" :value="value">
-                  {{ label }}
-                </option>
-              </select>
-            </div>
+        <div class="grid grid-cols-6 gap-4">
 
-            <!-- 建立時間 -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">建立時間</label>
-              <input
-                :value="formatDateTime(form.created_at)"
-                type="text"
-                readonly
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-500"
-              />
-            </div>
-
-            <!-- 指派業務 -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">指派業務</label>
-              <select
-                v-model="form.assigned_to"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="">未指派</option>
-                <option v-for="user in availableUsers" :key="user.id" :value="user.id">
-                  {{ user.name }}
-                </option>
-              </select>
-            </div>
-
-            <!-- 來源管道 -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">來源管道</label>
-              <select
-                v-model="form.channel"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="">未指定</option>
-                <option value="wp_form">網站表單</option>
-                <option value="line">官方LINE</option>
-                <option value="email">Email</option>
-                <option value="phone_call">電話</option>
-              </select>
-            </div>
-
-            <!-- 客戶姓名 -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">客戶姓名 *</label>
-              <input
-                v-model="form.customer_name"
-                type="text"
-                required
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <!-- LINE 顯示名稱 -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">LINE 顯示名稱</label>
-              <input
-                v-model="form.line_display_name"
-                type="text"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <!-- LINE 加好友 ID -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">LINE 加好友 ID</label>
-              <input
-                v-model="form.line_add_friend_id"
-                type="text"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <!-- 諮詢項目 -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">諮詢項目</label>
-              <input
-                v-model="form.consultation_item"
-                type="text"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <!-- 網站來源 -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">網站來源</label>
-              <input
-                v-model="form.website_source"
-                type="text"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <!-- 客戶Email -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-              <input
-                v-model="form.customer_email"
-                type="email"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <!-- 客戶手機 -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">手機號碼 *</label>
-              <input
-                v-model="form.customer_phone"
-                type="text"
-                required
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <!-- 案件編號 -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">案件編號</label>
-              <input
-                v-model="form.case_number"
-                type="text"
-                readonly
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-500"
-              />
-            </div>
-          </div>
-        </div>
-
-        <!-- 個人資料區塊 -->
-        <div class="mb-8">
-          <h3 class="text-lg font-medium text-gray-900 mb-4 border-b border-gray-200 pb-2">
-            個人資料
-          </h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <!-- 出生年月日 -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">出生年月日</label>
-              <input
-                v-model="form.birth_date"
-                type="date"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <!-- 身份證字號 -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">身份證字號</label>
-              <input
-                v-model="form.id_number"
-                type="text"
-                maxlength="10"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <!-- 最高學歷 -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">最高學歷</label>
-              <select
-                v-model="form.education"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="">請選擇</option>
-                <option value="國小">國小</option>
-                <option value="國中">國中</option>
-                <option value="高中職">高中職</option>
-                <option value="專科">專科</option>
-                <option value="大學">大學</option>
-                <option value="碩士">碩士</option>
-                <option value="博士">博士</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <!-- 聯絡資訊區塊 -->
-        <div class="mb-8">
-          <h3 class="text-lg font-medium text-gray-900 mb-4 border-b border-gray-200 pb-2">
-            聯絡資訊
-          </h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <!-- 地區 -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">地區</label>
-              <input
-                v-model="form.customer_region"
-                type="text"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <!-- 戶籍地址 -->
-            <div class="md:col-span-2">
-              <label class="block text-sm font-medium text-gray-700 mb-1">戶籍地址</label>
-              <input
-                v-model="form.home_address"
-                type="text"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <!-- 室內電話 -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">室內電話</label>
-              <input
-                v-model="form.landline_phone"
-                type="text"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <!-- 通訊地址是否同戶籍地 -->
-            <div class="flex items-center">
-              <input
-                v-model="form.comm_address_same_as_home"
-                @change="handleCommAddressChange"
-                type="checkbox"
-                id="comm_address_same_as_home"
-                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-              />
-              <label for="comm_address_same_as_home" class="ml-2 block text-sm text-gray-700">
-                通訊地址同戶籍地
-              </label>
-            </div>
-
-            <!-- 通訊地址 -->
-            <div class="md:col-span-2">
-              <label class="block text-sm font-medium text-gray-700 mb-1">
-                通訊地址
-                <span v-if="form.comm_address_same_as_home" class="text-sm text-gray-500">(自動同步戶籍地址)</span>
-              </label>
-              <input
-                v-model="form.comm_address"
-                type="text"
-                :readonly="form.comm_address_same_as_home"
-                :class="[
-                  'w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
-                  form.comm_address_same_as_home ? 'bg-gray-50' : 'bg-white'
-                ]"
-              />
-            </div>
-
-            <!-- 通訊電話 -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">通訊電話</label>
-              <input
-                v-model="form.comm_phone"
-                type="text"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <!-- 現居地住多久 -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">現居地住多久</label>
-              <input
-                v-model="form.residence_duration"
-                type="text"
-                placeholder="例：2年3個月"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <!-- 居住地持有人 -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">居住地持有人</label>
-              <select
-                v-model="form.residence_owner"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="">請選擇</option>
-                <option value="本人">本人</option>
-                <option value="父母">父母</option>
-                <option value="配偶">配偶</option>
-                <option value="租屋">租屋</option>
-                <option value="其他">其他</option>
-              </select>
-            </div>
-
-            <!-- 電信業者 -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">電信業者</label>
-              <select
-                v-model="form.telecom_operator"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="">請選擇</option>
-                <option value="中華電信">中華電信</option>
-                <option value="台灣大哥大">台灣大哥大</option>
-                <option value="遠傳電信">遠傳電信</option>
-                <option value="亞太電信">亞太電信</option>
-                <option value="台灣之星">台灣之星</option>
-                <option value="其他">其他</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <!-- 公司資料區塊 -->
-        <div class="mb-8">
-          <h3 class="text-lg font-medium text-gray-900 mb-4 border-b border-gray-200 pb-2">
-            公司資料
-          </h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <!-- 公司名稱 -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">公司名稱</label>
-              <input
-                v-model="form.company_name"
-                type="text"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <!-- 公司電話 -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">公司電話</label>
-              <input
-                v-model="form.company_phone"
-                type="text"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <!-- 職稱 -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">職稱</label>
-              <input
-                v-model="form.job_title"
-                type="text"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <!-- 公司地址 -->
-            <div class="md:col-span-2">
-              <label class="block text-sm font-medium text-gray-700 mb-1">公司地址</label>
-              <input
-                v-model="form.company_address"
-                type="text"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <!-- 月收入 -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">月收入</label>
-              <input
-                v-model="form.monthly_income"
-                type="number"
-                step="0.01"
-                placeholder="0.00"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <!-- 有無新轉勞保 -->
-            <div class="flex items-center">
-              <input
-                v-model="form.has_labor_insurance"
-                type="checkbox"
-                id="has_labor_insurance"
-                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-              />
-              <label for="has_labor_insurance" class="ml-2 block text-sm text-gray-700">
-                有新轉勞保
-              </label>
-            </div>
-
-            <!-- 目前公司在職多久 -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">目前公司在職多久</label>
-              <input
-                v-model="form.company_tenure"
-                type="text"
-                placeholder="例：1年6個月"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-          </div>
-        </div>
-
-        <!-- 其他資訊區塊 -->
-        <div class="mb-8">
-          <h3 class="text-lg font-medium text-gray-900 mb-4 border-b border-gray-200 pb-2">
-            其他資訊
-          </h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <!-- 需求金額 -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">需求金額</label>
-              <input
-                v-model="form.demand_amount"
-                type="number"
-                step="0.01"
-                placeholder="0.00"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <!-- 貸款金額 -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">貸款金額</label>
-              <input
-                v-model="form.loan_amount"
-                type="number"
-                step="0.01"
-                placeholder="0.00"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <!-- 貸款類型 -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">貸款類型</label>
-              <input
-                v-model="form.loan_type"
-                type="text"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <!-- 貸款期數 -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">貸款期數（月）</label>
-              <input
-                v-model="form.loan_term"
-                type="number"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <!-- 利率 -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">利率（%）</label>
-              <input
-                v-model="form.interest_rate"
-                type="number"
-                step="0.01"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <!-- 備註 -->
-            <div class="md:col-span-2">
-              <label class="block text-sm font-medium text-gray-700 mb-1">備註</label>
-              <textarea
-                v-model="form.notes"
-                rows="3"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <!-- 自定義欄位 -->
-            <div class="md:col-span-3">
-              <label class="block text-sm font-medium text-gray-700 mb-1">自定義欄位</label>
-              <textarea
-                v-model="form.custom_field"
-                rows="2"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-          </div>
-        </div>
-
-        <!-- 緊急聯絡人區塊 -->
-        <div class="mb-8">
-          <h3 class="text-lg font-medium text-gray-900 mb-4 border-b border-gray-200 pb-2">
-            緊急聯絡人
-          </h3>
-
-          <!-- 聯絡人① -->
-          <div class="mb-6">
-            <h4 class="text-md font-medium text-gray-800 mb-3">聯絡人①</h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- 第1區塊：基本資訊 -->
+          <div class="border border-gray-200 rounded-lg p-3">
+            <h3 class="text-base font-medium text-gray-900 mb-3 border-b border-gray-200 pb-2">
+              基本資訊
+            </h3>
+            <div class="space-y-3">
+              <!-- 案件狀態 -->
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">姓名</label>
+                <label class="block text-xs font-medium text-gray-700 mb-1">案件狀態</label>
+                <select
+                  v-model="form.status"
+                  class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <option v-for="(label, value) in caseStatusOptions" :key="value" :value="value">
+                    {{ label }}
+                  </option>
+                </select>
+              </div>
+
+              <!-- 建立時間 -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">建立時間</label>
                 <input
-                  v-model="form.emergency_contact_1_name"
+                  :value="formatDateTime(form.created_at)"
                   type="text"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  readonly
+                  class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-gray-50 text-gray-500"
                 />
               </div>
+
+              <!-- 指派業務 -->
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">關係</label>
+                <label class="block text-xs font-medium text-gray-700 mb-1">指派業務</label>
                 <select
-                  v-model="form.emergency_contact_1_relationship"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  v-model="form.assigned_to"
+                  class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <option value="">未指派</option>
+                  <option v-for="user in availableUsers" :key="user.id" :value="user.id">
+                    {{ user.name }}
+                  </option>
+                </select>
+              </div>
+
+              <!-- 來源管道 -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">來源管道</label>
+                <select
+                  v-model="form.channel"
+                  class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <option value="">未指定</option>
+                  <option value="wp_form">網站表單</option>
+                  <option value="line">官方LINE</option>
+                  <option value="email">Email</option>
+                  <option value="phone_call">電話</option>
+                </select>
+              </div>
+
+              <!-- 客戶姓名 -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">客戶姓名 *</label>
+                <input
+                  v-model="form.customer_name"
+                  type="text"
+                  required
+                  class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+
+              <!-- LINE 顯示名稱 -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">LINE 顯示名稱</label>
+                <input
+                  v-model="form.line_display_name"
+                  type="text"
+                  class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+
+              <!-- LINE 加好友 ID -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">LINE 加好友 ID</label>
+                <input
+                  v-model="form.line_add_friend_id"
+                  type="text"
+                  class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+
+              <!-- 諮詢項目 -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">諮詢項目</label>
+                <input
+                  v-model="form.consultation_item"
+                  type="text"
+                  class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+
+              <!-- 網站來源 -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">網站來源</label>
+                <input
+                  v-model="form.website_source"
+                  type="text"
+                  class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+
+              <!-- 客戶Email -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">Email</label>
+                <input
+                  v-model="form.customer_email"
+                  type="email"
+                  class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+
+              <!-- 客戶手機 -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">手機號碼 *</label>
+                <input
+                  v-model="form.customer_phone"
+                  type="text"
+                  required
+                  class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+
+              <!-- 案件編號 -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">案件編號</label>
+                <input
+                  v-model="form.case_number"
+                  type="text"
+                  readonly
+                  class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-gray-50 text-gray-500"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- 第2區塊：個人資料 -->
+          <div class="border border-gray-200 rounded-lg p-3">
+            <h3 class="text-base font-medium text-gray-900 mb-3 border-b border-gray-200 pb-2">
+              個人資料
+            </h3>
+            <div class="space-y-3">
+              <!-- 出生年月日 -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">出生年月日</label>
+                <input
+                  v-model="form.birth_date"
+                  type="date"
+                  class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+
+              <!-- 身份證字號 -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">身份證字號</label>
+                <input
+                  v-model="form.id_number"
+                  type="text"
+                  maxlength="10"
+                  class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+
+              <!-- 最高學歷 -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">最高學歷</label>
+                <select
+                  v-model="form.education"
+                  class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
                   <option value="">請選擇</option>
-                  <option value="父親">父親</option>
-                  <option value="母親">母親</option>
+                  <option value="國小">國小</option>
+                  <option value="國中">國中</option>
+                  <option value="高中職">高中職</option>
+                  <option value="專科">專科</option>
+                  <option value="大學">大學</option>
+                  <option value="碩士">碩士</option>
+                  <option value="博士">博士</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- 第3區塊：聯絡資訊 -->
+          <div class="border border-gray-200 rounded-lg p-3">
+            <h3 class="text-base font-medium text-gray-900 mb-3 border-b border-gray-200 pb-2">
+              聯絡資訊
+            </h3>
+            <div class="space-y-3">
+              <!-- 地區 -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">地區</label>
+                <input
+                  v-model="form.customer_region"
+                  type="text"
+                  class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+
+              <!-- 戶籍地址 -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">戶籍地址</label>
+                <textarea
+                  v-model="form.home_address"
+                  rows="2"
+                  class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+
+              <!-- 室內電話 -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">室內電話</label>
+                <input
+                  v-model="form.landline_phone"
+                  type="text"
+                  class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+
+              <!-- 通訊地址是否同戶籍地 -->
+              <div class="flex items-center">
+                <input
+                  v-model="form.comm_address_same_as_home"
+                  @change="handleCommAddressChange"
+                  type="checkbox"
+                  id="comm_address_same_as_home"
+                  class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <label for="comm_address_same_as_home" class="ml-2 block text-xs text-gray-700">
+                  通訊地址同戶籍地
+                </label>
+              </div>
+
+              <!-- 通訊地址 -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">
+                  通訊地址
+                  <span v-if="form.comm_address_same_as_home" class="text-xs text-gray-500">(自動同步)</span>
+                </label>
+                <textarea
+                  v-model="form.comm_address"
+                  rows="2"
+                  :readonly="form.comm_address_same_as_home"
+                  :class="[
+                    'w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
+                    form.comm_address_same_as_home ? 'bg-gray-50' : 'bg-white'
+                  ]"
+                />
+              </div>
+
+              <!-- 通訊電話 -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">通訊電話</label>
+                <input
+                  v-model="form.comm_phone"
+                  type="text"
+                  class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+
+              <!-- 現居地住多久 -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">現居地住多久</label>
+                <input
+                  v-model="form.residence_duration"
+                  type="text"
+                  placeholder="例：2年3個月"
+                  class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+
+              <!-- 居住地持有人 -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">居住地持有人</label>
+                <select
+                  v-model="form.residence_owner"
+                  class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <option value="">請選擇</option>
+                  <option value="本人">本人</option>
+                  <option value="父母">父母</option>
                   <option value="配偶">配偶</option>
-                  <option value="子女">子女</option>
-                  <option value="兄弟姊妹">兄弟姊妹</option>
-                  <option value="朋友">朋友</option>
-                  <option value="同事">同事</option>
+                  <option value="租屋">租屋</option>
                   <option value="其他">其他</option>
                 </select>
               </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">電話</label>
-                <input
-                  v-model="form.emergency_contact_1_phone"
-                  type="text"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">方便聯絡時間</label>
-                <input
-                  v-model="form.contact_time_1"
-                  type="text"
-                  placeholder="例：平日上午"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-            </div>
-            <div class="mt-2 flex items-center">
-              <input
-                v-model="form.confidential_1"
-                type="checkbox"
-                id="confidential_1"
-                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-              />
-              <label for="confidential_1" class="ml-2 block text-sm text-gray-700">
-                保密聯絡
-              </label>
-            </div>
-          </div>
 
-          <!-- 聯絡人② -->
-          <div class="mb-6">
-            <h4 class="text-md font-medium text-gray-800 mb-3">聯絡人②</h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <!-- 電信業者 -->
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">姓名</label>
-                <input
-                  v-model="form.emergency_contact_2_name"
-                  type="text"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">關係</label>
+                <label class="block text-xs font-medium text-gray-700 mb-1">電信業者</label>
                 <select
-                  v-model="form.emergency_contact_2_relationship"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  v-model="form.telecom_operator"
+                  class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
                   <option value="">請選擇</option>
-                  <option value="父親">父親</option>
-                  <option value="母親">母親</option>
-                  <option value="配偶">配偶</option>
-                  <option value="子女">子女</option>
-                  <option value="兄弟姊妹">兄弟姊妹</option>
-                  <option value="朋友">朋友</option>
-                  <option value="同事">同事</option>
+                  <option value="中華電信">中華電信</option>
+                  <option value="台灣大哥大">台灣大哥大</option>
+                  <option value="遠傳電信">遠傳電信</option>
+                  <option value="亞太電信">亞太電信</option>
+                  <option value="台灣之星">台灣之星</option>
                   <option value="其他">其他</option>
                 </select>
               </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">電話</label>
-                <input
-                  v-model="form.emergency_contact_2_phone"
-                  type="text"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">方便聯絡時間</label>
-                <input
-                  v-model="form.contact_time_2"
-                  type="text"
-                  placeholder="例：假日下午"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-            </div>
-            <div class="mt-2 flex items-center">
-              <input
-                v-model="form.confidential_2"
-                type="checkbox"
-                id="confidential_2"
-                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-              />
-              <label for="confidential_2" class="ml-2 block text-sm text-gray-700">
-                保密聯絡
-              </label>
             </div>
           </div>
 
-          <!-- 介紹人 -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">介紹人</label>
-            <input
-              v-model="form.referrer"
-              type="text"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
+          <!-- 第4區塊：公司資料 -->
+          <div class="border border-gray-200 rounded-lg p-3">
+            <h3 class="text-base font-medium text-gray-900 mb-3 border-b border-gray-200 pb-2">
+              公司資料
+            </h3>
+            <div class="space-y-3">
+              <!-- 公司名稱 -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">公司名稱</label>
+                <input
+                  v-model="form.company_name"
+                  type="text"
+                  class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+
+              <!-- 公司電話 -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">公司電話</label>
+                <input
+                  v-model="form.company_phone"
+                  type="text"
+                  class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+
+              <!-- 職稱 -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">職稱</label>
+                <input
+                  v-model="form.job_title"
+                  type="text"
+                  class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+
+              <!-- 公司地址 -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">公司地址</label>
+                <textarea
+                  v-model="form.company_address"
+                  rows="2"
+                  class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+
+              <!-- 月收入 -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">月收入</label>
+                <input
+                  v-model="form.monthly_income"
+                  type="number"
+                  step="0.01"
+                  placeholder="0.00"
+                  class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+
+              <!-- 有無新轉勞保 -->
+              <div class="flex items-center">
+                <input
+                  v-model="form.has_labor_insurance"
+                  type="checkbox"
+                  id="has_labor_insurance"
+                  class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <label for="has_labor_insurance" class="ml-2 block text-xs text-gray-700">
+                  有新轉勞保
+                </label>
+              </div>
+
+              <!-- 目前公司在職多久 -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">目前公司在職多久</label>
+                <input
+                  v-model="form.company_tenure"
+                  type="text"
+                  placeholder="例：1年6個月"
+                  class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+            </div>
           </div>
+
+          <!-- 第5區塊：其他資訊 -->
+          <div class="border border-gray-200 rounded-lg p-3">
+            <h3 class="text-base font-medium text-gray-900 mb-3 border-b border-gray-200 pb-2">
+              其他資訊
+            </h3>
+            <div class="space-y-3">
+              <!-- 需求金額 -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">需求金額</label>
+                <input
+                  v-model="form.demand_amount"
+                  type="number"
+                  step="0.01"
+                  placeholder="0.00"
+                  class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+
+              <!-- 貸款金額 -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">貸款金額</label>
+                <input
+                  v-model="form.loan_amount"
+                  type="number"
+                  step="0.01"
+                  placeholder="0.00"
+                  class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+
+              <!-- 貸款類型 -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">貸款類型</label>
+                <input
+                  v-model="form.loan_type"
+                  type="text"
+                  class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+
+              <!-- 貸款期數 -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">貸款期數（月）</label>
+                <input
+                  v-model="form.loan_term"
+                  type="number"
+                  class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+
+              <!-- 利率 -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">利率（%）</label>
+                <input
+                  v-model="form.interest_rate"
+                  type="number"
+                  step="0.01"
+                  class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+
+              <!-- 備註 -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">備註</label>
+                <textarea
+                  v-model="form.notes"
+                  rows="3"
+                  class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+
+              <!-- 自定義欄位 -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">自定義欄位</label>
+                <textarea
+                  v-model="form.custom_field"
+                  rows="2"
+                  class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- 第6區塊：緊急聯絡人 -->
+          <div class="border border-gray-200 rounded-lg p-3">
+            <h3 class="text-base font-medium text-gray-900 mb-3 border-b border-gray-200 pb-2">
+              緊急聯絡人
+            </h3>
+            <div class="space-y-4">
+              <!-- 聯絡人① -->
+              <div>
+                <h4 class="text-sm font-medium text-gray-800 mb-2 border-b border-gray-100 pb-1">聯絡人①</h4>
+                <div class="space-y-2">
+                  <div>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">姓名</label>
+                    <input
+                      v-model="form.emergency_contact_1_name"
+                      type="text"
+                      class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">關係</label>
+                    <select
+                      v-model="form.emergency_contact_1_relationship"
+                      class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    >
+                      <option value="">請選擇</option>
+                      <option value="父親">父親</option>
+                      <option value="母親">母親</option>
+                      <option value="配偶">配偶</option>
+                      <option value="子女">子女</option>
+                      <option value="兄弟姊妹">兄弟姊妹</option>
+                      <option value="朋友">朋友</option>
+                      <option value="同事">同事</option>
+                      <option value="其他">其他</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">電話</label>
+                    <input
+                      v-model="form.emergency_contact_1_phone"
+                      type="text"
+                      class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">方便聯絡時間</label>
+                    <input
+                      v-model="form.contact_time_1"
+                      type="text"
+                      placeholder="例：平日上午"
+                      class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+                  <div class="flex items-center">
+                    <input
+                      v-model="form.confidential_1"
+                      type="checkbox"
+                      id="confidential_1"
+                      class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    />
+                    <label for="confidential_1" class="ml-2 block text-xs text-gray-700">
+                      保密聯絡
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 聯絡人② -->
+              <div>
+                <h4 class="text-sm font-medium text-gray-800 mb-2 border-b border-gray-100 pb-1">聯絡人②</h4>
+                <div class="space-y-2">
+                  <div>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">姓名</label>
+                    <input
+                      v-model="form.emergency_contact_2_name"
+                      type="text"
+                      class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">關係</label>
+                    <select
+                      v-model="form.emergency_contact_2_relationship"
+                      class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    >
+                      <option value="">請選擇</option>
+                      <option value="父親">父親</option>
+                      <option value="母親">母親</option>
+                      <option value="配偶">配偶</option>
+                      <option value="子女">子女</option>
+                      <option value="兄弟姊妹">兄弟姊妹</option>
+                      <option value="朋友">朋友</option>
+                      <option value="同事">同事</option>
+                      <option value="其他">其他</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">電話</label>
+                    <input
+                      v-model="form.emergency_contact_2_phone"
+                      type="text"
+                      class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">方便聯絡時間</label>
+                    <input
+                      v-model="form.contact_time_2"
+                      type="text"
+                      placeholder="例：假日下午"
+                      class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+                  <div class="flex items-center">
+                    <input
+                      v-model="form.confidential_2"
+                      type="checkbox"
+                      id="confidential_2"
+                      class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    />
+                    <label for="confidential_2" class="ml-2 block text-xs text-gray-700">
+                      保密聯絡
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 介紹人 -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">介紹人</label>
+                <input
+                  v-model="form.referrer"
+                  type="text"
+                  class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+            </div>
+          </div>
+
         </div>
       </form>
     </div>

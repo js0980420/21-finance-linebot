@@ -2,32 +2,32 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   const authStore = useAuthStore()
 
   // 在開發環境中，如果目標頁面不是登入頁，直接模擬登入並跳轉
-  // if (process.env.NODE_ENV !== 'production' && to.path !== '/auth/login') {
-  //   console.log('Development mode: Bypassing auth middleware, direct login.')
-  //   const mockUser = {
-  //     id: 1,
-  //     username: 'admin',
-  //     email: 'admin@example.com',
-  //     name: '系統管理員',
-  //     roles: ['admin'],
-  //     permissions: ['all_access'],
-  //     is_admin: true,
-  //     is_manager: false,
-  //     token: 'mock-jwt-token-for-development'
-  //   }
-  //   authStore.setUser(mockUser)
-  //   if (process.client) {
-  //     sessionStorage.setItem('user-profile', JSON.stringify(mockUser))
-  //   }
+  if (process.env.NODE_ENV !== 'production' && to.path !== '/auth/login') {
+    console.log('Development mode: Bypassing auth middleware, direct login.')
+    const mockUser = {
+      id: 1,
+      username: 'admin',
+      email: 'admin@example.com',
+      name: '系統管理員',
+      roles: ['admin'],
+      permissions: ['all_access'],
+      is_admin: true,
+      is_manager: false,
+      token: 'mock-jwt-token-for-development'
+    }
+    authStore.setUser(mockUser)
+    if (process.client) {
+      sessionStorage.setItem('user-profile', JSON.stringify(mockUser))
+    }
 
-  //   // 確保狀態更新後再重定向
-  //   await nextTick()
-  //   if (to.path === '/' || to.path === '/auth/login') {
-  //     return navigateTo('/dashboard/analytics') // 重定向到儀表板頁面
-  //   } else {
-  //     return // 允許導航到其他目標頁面
-  //   }
-  // }
+    // 確保狀態更新後再重定向
+    await nextTick()
+    if (to.path === '/' || to.path === '/auth/login') {
+      return navigateTo('/dashboard/analytics') // 重定向到儀表板頁面
+    } else {
+      return // 允許導航到其他目標頁面
+    }
+  }
 
   console.log('Auth middleware - 來源頁面:', from?.path, '目標頁面:', to.path)
   console.log('Auth middleware - 當前登入狀態:', authStore.isLoggedIn)
