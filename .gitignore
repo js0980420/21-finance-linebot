@@ -1,0 +1,46 @@
+# System files
+.DS_Store
+Thumbs.db
+.VirtualBox/
+AppData/
+Application Data/
+Cookies/
+Documents/
+Local Settings/
+My Documents/
+NetHood/
+PrintHood/
+Recent/
+SendTo/
+「開始」功能表/
+*.stackdump
+
+# Development tools
+.bun/
+.cargo/
+.claude/
+.claude.json*
+.codeium/
+.config/
+.cursor/
+.cursorrules
+.gemini/
+.git/
+.gitconfig
+.htaccess
+.kube/
+.npmrc
+.nuxtrc
+.python_history
+.rustup/
+.windsurf/
+.yarnrc
+__pycache__/
+node_modules/
+
+# Project files to keep
+!backend/
+!frontend/
+!render.yaml
+!.gitignore
+!README.md
