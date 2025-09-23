@@ -54,12 +54,6 @@ RUN set -eux; \
 # 這裡的 composer install 應該在 chown 之後，確保生成的 vendor 檔案權限正確
 RUN composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-req=ext-grpc
 
-# --- 新增以下行來建立 www-data 使用者和群組 ---
-# 確保 www-data group 和 user 存在 (Alpine Linux)
-RUN addgroup -g 82 www-data && \
-    adduser -u 82 -D -S -G www-data www-data
-# --- 結束新增 ---
-
 # 清除任何現有的 Laravel 快取，並確保以 www-data 使用者執行
 # 注意：這在建置時運行，所以來自 docker-compose 的環境變數將不可用
 # 如果需要，我們需要在運行時清除快取
