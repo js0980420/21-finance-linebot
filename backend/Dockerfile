@@ -39,34 +39,30 @@ WORKDIR /var/www/html
 # Copy application code first
 COPY . .
 
-# 建立 Laravel 必要可寫目錄並設定權限
-# - 建立 bootstrap/cache 與 storage 下常用子目錄
-# - 將擁有者設為 www-data（PHP 預設使用者），避免執行期寫入受阻
-# - 權限 775：同群組可寫，避免過度開放
+# 建立 Laravel 必要可寫目錄並設定權限 (在 COPY . . 之後執行，確保對所有複製的檔案生效)
 RUN set -eux; \
     mkdir -p bootstrap/cache \
              storage/framework/{cache,data,sessions,views} \
              storage/logs \
              storage/framework/views; \
-    chown -R www-data:www-data bootstrap storage; \
-    chmod -R 775 bootstrap storage
+    chown -R www-data:www-data . ; \
+    chmod -R 775 bootstrap storage; \
+    chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Install PHP dependencies
 # Handle potential lock file sync issues and platform requirements
 # Remove outdated lock file and install dependencies with platform requirement ignoring
-RUN rm -f composer.lock && \
-    composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-req=ext-grpc
+# 這裡的 composer install 應該在 chown 之後，確保生成的 vendor 檔案權限正確
+RUN composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-req=ext-grpc
 
-# Set permissions
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
-
-# Clear any existing Laravel cache to ensure environment variables are read correctly
-# Note: This runs during build time, so environment variables from docker-compose won't be available
-# We'll need to clear cache at runtime if needed
+# 清除任何現有的 Laravel 快取，並確保以 www-data 使用者執行
+# 注意：這在建置時運行，所以來自 docker-compose 的環境變數將不可用
+# 如果需要，我們需要在運行時清除快取
+USER www-data # 切換到 www-data 使用者
 RUN php artisan config:clear || true
 RUN php artisan route:clear || true
 RUN php artisan view:clear || true
+USER root # 切換回 root 以執行後續的系統級操作 (例如 COPY Nginx config)
 
 # Copy Nginx configuration and startup script
 COPY docker/nginx.conf /etc/nginx/nginx.conf
