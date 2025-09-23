@@ -11,6 +11,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
+    "start": "cross-env NODE_ENV=production NUXT_PUBLIC_API_BASE_URL=/api nuxt start",
     "test": "vitest",
     "test:unit": "vitest run --reporter=verbose",
     "test:watch": "vitest watch",
