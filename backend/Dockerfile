@@ -55,7 +55,7 @@ RUN set -eux; \
 # Handle potential lock file sync issues and platform requirements
 # Remove outdated lock file and install dependencies with platform requirement ignoring
 RUN rm -f composer.lock && \
-    composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-req=ext-grpc
+    composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-req=ext-grpc --no-scripts
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
@@ -64,9 +64,10 @@ RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 # Clear any existing Laravel cache to ensure environment variables are read correctly
 # Note: This runs during build time, so environment variables from docker-compose won't be available
 # We'll need to clear cache at runtime if needed
-RUN php artisan config:clear || true
-RUN php artisan route:clear || true
-RUN php artisan view:clear || true
+# Skip these commands during build as they might fail without complete setup
+# RUN php artisan config:clear || true
+# RUN php artisan route:clear || true
+# RUN php artisan view:clear || true
 
 # Copy Nginx configuration and startup script
 COPY docker/nginx.conf /etc/nginx/nginx.conf
