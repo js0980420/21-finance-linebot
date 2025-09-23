@@ -1,9 +1,29 @@
 <?php
 
+use Illuminate\Support\Str;
+
 return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Default Cache Store
+    |--------------------------------------------------------------------------
+    */
+
     'default' => env('CACHE_DRIVER', 'file'),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Cache Stores
+    |--------------------------------------------------------------------------
+    */
+
     'stores' => [
+
+        'apc' => [
+            'driver' => 'apc',
+        ],
+
         'array' => [
             'driver' => 'array',
             'serialize' => false,
@@ -41,9 +61,7 @@ return [
         ],
 
         'redis' => [
-            'driver' => 'redis',
-            'connection' => 'cache',
-            'lock_connection' => 'default',
+            'driver' => 'array',
         ],
 
         'dynamodb' => [
@@ -58,7 +76,15 @@ return [
         'octane' => [
             'driver' => 'octane',
         ],
+
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Cache Key Prefix
+    |--------------------------------------------------------------------------
+    */
+
     'prefix' => env('CACHE_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_cache_'),
+
 ];
