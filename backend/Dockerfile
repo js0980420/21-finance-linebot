@@ -1,97 +1,79 @@
 FROM php:8.2-fpm-alpine
 
-LABEL "language"="php"
-LABEL "framework"="laravel"
-
-WORKDIR /app
-
 # Install system dependencies
 RUN apk update && apk add --no-cache \
-    nginx \
+    supervisor \
     mysql-client \
-    git \
+    zip \
     unzip \
-    icu-dev \
-    libzip-dev \
+    curl \
+    libpng-dev \
     oniguruma-dev \
+    libxml2-dev \
     freetype-dev \
     libjpeg-turbo-dev \
-    libpng-dev \
-    wget \
-    curl \
-    autoconf \
-    g++ \
-    make
+    libzip-dev \
+    && rm -rf /var/cache/apk/* # 清理 apk 快取
 
 # Install PHP extensions
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg && \
-    docker-php-ext-install -j$(nproc) pdo_mysql mbstring zip exif pcntl bcmath gd opcache
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg
+RUN docker-php-ext-install \
+    pdo_mysql \
+    mbstring \
+    exif \
+    pcntl \
+    bcmath \
+    gd \
+    zip
+
+# Explicitly enable pdo_mysql
+RUN docker-php-ext-enable pdo_mysql
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copy all application files
-COPY . /app/
+# Set working directory
+WORKDIR /var/www/html
 
-# Create entrypoint script with fixed paths
-RUN cat > /app/entrypoint.sh << 'EOF'
-#!/bin/sh
-set -e
+# Copy application code first
+COPY . .
 
-# Change to app directory first
-cd /app
+# 建立 Laravel 必要可寫目錄並設定權限 (在 COPY . . 之後執行，確保對所有複製的檔案生效)
+RUN set -eux; \
+    mkdir -p bootstrap/cache \
+             storage/framework/{cache,data,sessions,views} \
+             storage/logs \
+             storage/framework/views; \
+    chown -R www-data:www-data . ; \
+    chmod -R 775 bootstrap storage; \
+    chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Check if we have Laravel files
-if [ ! -f "/app/artisan" ]; then
-  echo "Error: artisan file not found in /app"
-  ls -la /app/
-  exit 1
-fi
+# Install PHP dependencies
+# Handle potential lock file sync issues and platform requirements
+# Remove outdated lock file and install dependencies with platform requirement ignoring
+# 這裡的 composer install 應該在 chown 之後，確保生成的 vendor 檔案權限正確
+RUN composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-req=ext-grpc
 
-# Database setup
-if [ "$DB_CONNECTION" = "sqlite" ]; then
-  if [ ! -f /app/database/database.sqlite ]; then
-    mkdir -p /app/database
-    touch /app/database/database.sqlite
-  fi
-fi
+# 清除任何現有的 Laravel 快取，並確保以 www-data 使用者執行
+# 注意：這在建置時運行，所以來自 docker-compose 的環境變數將不可用
+# 如果需要，我們需要在運行時清除快取
+USER www-data # 切換到 www-data 使用者
+RUN php artisan config:clear || true
+RUN php artisan route:clear || true
+RUN php artisan view:clear || true
+USER root # 切換回 root 以執行後續的系統級操作 (例如 COPY Nginx config)
 
-# Set permissions
-chown -R www-data:www-data /app/storage /app/bootstrap/cache || true
-chmod -R 775 /app/storage /app/bootstrap/cache || true
+# Copy Nginx configuration and startup script
+COPY docker/nginx.conf /etc/nginx/nginx.conf
+COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY docker/startup.sh /startup.sh
 
-# Laravel artisan commands (with proper working directory)
-if [ -f /app/.env ]; then
-  cd /app && php artisan key:generate --force
-fi
+# Make startup script executable
+RUN chmod +x /startup.sh
 
-cd /app && php artisan config:cache || true
-cd /app && php artisan route:cache || true
-cd /app && php artisan view:cache || true
+# Create Nginx, supervisor, and Nginx log directories
+RUN mkdir -p /var/log/supervisor /run/nginx /var/log/nginx
 
-# Start services
-php-fpm &
-nginx -g "daemon off;"
-EOF
+EXPOSE 8000
 
-# Set proper permissions
-RUN chmod +x /app/entrypoint.sh && \
-    chown -R www-data:www-data /app
-
-# Create necessary directories
-RUN mkdir -p /app/storage/logs /app/storage/framework/cache /app/storage/framework/sessions /app/storage/framework/views \
-    /app/bootstrap/cache /app/database && \
-    touch /app/database/database.sqlite
-
-# Install Composer dependencies
-RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts || true
-
-# Copy nginx configuration
-RUN if [ -f /app/nginx.conf ]; then cp /app/nginx.conf /etc/nginx/conf.d/default.conf; fi
-
-# Final permission fix
-RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache
-
-EXPOSE 8080
-
-CMD ["/app/entrypoint.sh"]
+CMD ["/startup.sh"]
