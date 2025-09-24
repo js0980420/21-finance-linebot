@@ -1,42 +1,32 @@
-# Development stage
-FROM node:20-alpine as development
+Dockerfile
+FROM node:22-alpine
+LABEL "language"="nodejs" 
+LABEL "framework"="nuxt.js"
 
-WORKDIR /app
-
-# Install necessary dependencies for native bindings
-RUN apk add --no-cache python3 make g++
-
-COPY package*.json ./
-# Use npm install instead of npm ci to handle lock file issues
-RUN npm install --frozen-lockfile || npm install
-
-COPY . .
-
-EXPOSE 3000
-
-CMD ["npm", "run", "dev"]
-
-# Production stage
-FROM node:20-alpine as production
-
-WORKDIR /app
-
-# Install necessary dependencies for native bindings
-RUN apk add --no-cache python3 make g++
-
-COPY package*.json ./
-# Use npm install instead of npm ci to handle lock file issues
-RUN npm install --frozen-lockfile || npm install
-
-COPY . .
-
-# Set production environment variables before build
 ENV NODE_ENV=production
-RUN npm run build:prod
+ENV NITRO_HOST=0.0.0.0
+ENV NITRO_PORT=3000
+ENV NUXT_TELEMETRY_DISABLED=1
 
-# Clean up dev dependencies after build
-RUN npm install --only=production && npm cache clean --force
+WORKDIR /src
+
+# Install system dependencies
+RUN apk add --no-cache python3 make g++
+
+# Copy package files
+COPY Project/finance0810-develop/frontend/package*.json ./
+
+# Install all dependencies
+RUN npm install
+
+# Copy source code
+COPY Project/finance0810-develop/frontend/ .
+
+# Prepare and build
+RUN npm run postinstall
+RUN npm run build
 
 EXPOSE 3000
 
-CMD ["node", ".output/server/index.mjs"]
+# Use the correct Zeabur output path
+CMD ["node", ".zeabur/output/functions/__nitro.func/index.mjs"]
